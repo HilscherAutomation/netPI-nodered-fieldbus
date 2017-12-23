@@ -1,0 +1,20 @@
+{
+  "traceFileName": "/root/.node-red/node-fieldbus.log", 
+  "traceLevel": 0, 
+  "nodeTraceLevel": 0,
+  "separatorToken": "~",
+  "readCycle": 100,
+  "fieldbusReconnectTime": 1000,
+  "fwPath": [
+    {
+      "OS": "linux",
+      "_1variante": "gateway",
+      "_1path": "/var/FWPool",
+      "variante": "raspberry",
+      "path": "/root/.node-red/FWPool",
+      "_2variante": "pc",
+      "_2path": "/var/FWPool"
+    }
+  ],
+  "webCfgSettings": { "winOpenUrl": "http://@LOCAL_IP@:9000/webConfigurator/fieldbus?Config_Filename=" }
+}

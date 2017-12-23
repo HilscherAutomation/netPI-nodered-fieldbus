@@ -1,0 +1,1560 @@
+<!--
+  Copyright 2016 Hilscher Gesellschaft fuer Systemautomation mbH.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/javascript">
+  var EnumSignalFilter = {
+    SIG_FILTER_UNDEFINED: 0,
+    SIG_FILTER_IN: 1,
+    SIG_FILTER_OUT: 2,
+    SIG_FILTER_DIAG: 4,
+  };
+</script>
+
+<script type="text/x-red" data-template-name="fieldbus in">
+  <div class="form-row" style="width:500px">
+    <label for=" node-input-fieldbusobj"><i class="fa fa-bus" style="width:40%"></i> Fieldbus interface</label>
+    <input type="text" id="node-input-fieldbusObj" style="width:70%">
+    <input type="hidden" id="oldInterfaceName">
+    <!--
+    id="node-input-lookup-fieldbusObj" is the implictely added button
+    -->
+  </div>
+  <div class="form-row" id="node_input_nameRow">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" style="width:70%">
+  </div>
+  <div class="form-row" id="node_input_selectedSignalPathRow">
+    <label for="node-input-selectedSignalPath"><i class="fa fa-random"></i> Signal</label>
+    <input type="text" id="node-input-selectedSignalPath" style="width:60%;" placeholder="none" readonly />
+    <a id="node-input-lookup-selectedSignalPath" class="btn"><i id="node-input-lookup-selectedSignalPath-icon" class="fa fa-search"></i></a>
+  </div>
+  <div class="form-row" id="node_input_lastErrorRow">
+    <label for="node-input-lastErrorView"><i class="fa fa-exclamation"></i>Last Error</label>
+    <input type="text" id="node-input-lastErrorView" style="width:20%;" placeholder="none" readonly />
+    <button type="button" id="node-input-button-clearError" aria-disabled="false" role="button" display="inline-block">
+      <span class="class=" ui-button-text">
+        Clear&nbsp;Error
+      </span>
+    </button>
+    <div class="form-row"></div>
+    <label for="node-input-lastErrorDescView"><i class="fa fa-exclamation"></i>Description</label>
+    <textarea readonly style="width:70%; height:100px; color:red; background-color:yellow" id="node-input-lastErrorDescView"></textarea>
+  </div>
+  <div class="form-row">
+    <input type="hidden" id="node-input-FieldbusNodeVersion" placeholder="" />
+    <input type="hidden" id="node-input-WrapperVersion" placeholder="" />
+    <input type="hidden" id="node-input-WrapperCompileDate" placeholder="" />
+    <input type="hidden" id="node-input-MinExpectedNodeJSVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeJSVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeREDVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeCycleTime" placeholder="" />    
+    <input type="hidden" id="node-input-WrapperTraceLevel" placeholder="" />
+    <input type="hidden" id="node-input-NodeTraceLevel" placeholder="" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="fieldbus in" id="input_type_help_text">
+  <p>Reads a signal value from Fieldbus and injects it into the flow</p>
+  <p></p>
+  <p>The node lets you</p>
+  <p></p>
+  <li>
+    select the type of Fieldbus protocol to be used
+  </li>
+  <li>
+    open the Fieldbus configurator page to configure the Fieldbus signals
+  </li>
+  <li>
+    select a signal to be read and watched for changes
+  </li>
+  <li>
+    inject a signal value into the flow
+  </li>
+  <p></p>
+  <p>The resulting message has the following properties:</p>
+  <li><b>msg.topic</b>, signal name</li>
+  <li><b>msg.payload.timestamp</b>, UTC time as a long value the data was received</li>
+  <li><b>msg.payload.error</b>, Fieldbus communication error. [0 for success]</li>
+  <li><b>msg.payload.datatype</b>, data type of the provided Value e.g. ("Unsigned8")</li>
+  <li><b>msg.payload.value</b>, array of values</li>
+  <p></p>
+  <p>Example: { "topic": "input~send_001~Bitlist_1_3",</p>
+  "payload": { "error": 0, "timestamp": 1472450387345, "datatype": "Unsigned8", "value": "[1,2,3]" }, "_msgid": "88afe033.77502" }
+</script>
+
+<script type="text/javascript">
+
+  var versionData = undefined;
+
+  RED.nodes.registerType('fieldbus in', {
+    category: 'input',
+    defaults: {
+      name: {
+        name: ""
+      },
+      FieldbusNodeVersion: {
+        value: undefined,
+        required: false
+      },
+      WrapperVersion: {
+        value: undefined,
+        required: false
+      },
+      WrapperCompileDate: {
+        value: undefined,
+        required: false
+      },
+      MinExpectedNodeJSVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeJSVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeREDVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeCycleTime: {
+        value: undefined,
+        required: false
+      },
+      WrapperTraceLevel: {
+        value: undefined,
+        required: false
+      },
+      NodeTraceLevel: {
+        value: undefined,
+        required: false
+      },
+      selectedSignalPath: {
+        name: "none"
+      },
+      fieldbusObj: {
+        type: "fieldbus interface",
+        required: true
+      },
+    },
+    color: "BurlyWood",
+    inputs: 0,
+    outputs: 1,
+    icon: "fieldbus.png",
+    label: function () {
+      var fieldbusNode = RED.nodes.node(this.fieldbusObj);
+      //return this.name || (fieldbusNode ? fieldbusNode.label().split(":")[0] : "fieldbus");
+      if (fieldbusNode && fieldbusNode.label() !== "") {
+        return this.name || fieldbusNode.label().split(":")[0];
+      }
+      return this.name || "fieldbus";
+    },
+    labelStyle: function () {
+      //debugger;
+      if (versionData === undefined) {
+        getCurrentVersionInfo(function (res) {
+          versionData = res;
+        });
+      }
+      if (versionData !== undefined) {
+        this.FieldbusNodeVersion = versionData.fieldbusNodeVersion.val;
+        this.WrapperVersion = versionData.wrapperVersion.val;
+        this.WrapperCompileDate = versionData.wrapperVersion.Compiled;
+        this.MinExpectedNodeJSVersion = versionData.expectedNodeVersion.val;
+        this.ActNodeJSVersion = versionData.currentNodeVersion.val;
+        this.ActNodeREDVersion = versionData.nodeREDVersion.val;
+        this.ActNodeCycleTime = versionData.actNodeCycleTime.val;
+        this.WrapperTraceLevel = versionData.wrapperTraceLevel.val;
+        this.NodeTraceLevel = versionData.nodeTraceLevel.val;
+      }
+      return this.name ? "node_label_italic" : "";
+    },
+    onpaletteadd: function () {
+    },
+    oneditprepare: function () {
+      var self = this;
+      var fieldbusNode = RED.nodes.node(this.fieldbusObj);
+      try {
+        if (fieldbusNode === undefined) {
+          $("#node_input_selectedSignalPathRow").hide();
+        } else {
+
+          getActError(this, true);
+
+          //alert("INPUT_NODE" + JSON.stringify(fieldbusNode));
+          $("#node_input_selectedSignalPathRow").show();
+          if (fieldbusNode.currentInterfaceName === "") {
+            $("#node_input_selectedSignalPathRow").hide();
+          } else {
+            try {
+              $("#node-input-selectedSignalPath").autocomplete("destroy");
+            } catch (err) { }
+          }
+        }
+      } catch (err) {
+      }
+      $("#node_input_selectedSignalPathRow").focusout(function () {
+        try {
+          $("#node-input-selectedSignalPath").autocomplete("destroy");
+        } catch (err) { }
+      });
+      //in case a user changes only the fieldbus interface by selecting predefined interfaces the
+      //fieldbusNode object will not contain the current selected name until he pressed save
+      $("#node-input-fieldbusObj").focus(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        if (fieldbusNode) {
+          $("#oldInterfaceName").val(fieldbusNode.expectedInterfaceName);
+        }
+      });
+      $("#node-input-lookup-fieldbusObj").click(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        if (fieldbusNode) {
+          $("#oldInterfaceName").val(fieldbusNode.expectedInterfaceName);
+        }
+      });
+      $("#node-input-button-clearError").click(function () {
+        clearLastError(self);
+      });
+      //$("#node-input-fieldbusObj").focusout(function () {
+      //}
+      $("#node-input-fieldbusObj").change(function () {
+        var fieldbusObjectNew = $("#node-input-fieldbusObj").val();
+        var oldInterfaceName = $("#oldInterfaceName").val();
+        var equal = true;
+        //debugger;
+        if (oldInterfaceName && oldInterfaceName !== "") {
+          if (fieldbusObjectNew !== "_ADD_") { //this is the fact if you press 'Add new fieldbus'
+            var fieldbusNodeNew = RED.nodes.node(fieldbusObjectNew);
+            if (fieldbusNodeNew.expectedInterfaceName !== $("#oldInterfaceName").val()) {
+              //alert("OldInterfaceName: " + $("#oldInterfaceName").val() + "\nNewInterfaceName: " + fieldbusNodeNew.expectedInterfaceName);
+              equal = false;
+            }
+          }
+        }
+        if (equal === false && $("#node-input-selectedSignalPath").val() !== "") {
+          $("#node-input-selectedSignalPath").val("");
+          $("#node_input_selectedSignalPathRow").hide();
+          alert("You have changed the fieldbus interface for this node!\n\n" +
+            "Before you can select a signal now you have to download the firmware first.");
+        }
+      });
+      //when clicking on the lookup button ask the wrapper for actual data and show them in a drop down list
+      $("#node-input-lookup-selectedSignalPath").click(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        getSignals(EnumSignalFilter.SIG_FILTER_IN, fieldbusNode, function (err, res) {
+          if (err !== undefined && err.Error !== 0) {
+            printError(err, "getSignals");
+            $("#node-input-selectedSignalPath").val("");
+          } else {
+            if (res.length) {
+              $("#node-input-selectedSignalPath").autocomplete({
+                source: res,
+                minLength: 0,
+                autoFocus: true,
+                close: function (event, ui) {
+                  $("#node-input-selectedSignalPath").autocomplete("destroy");
+                  //at this point the signal is selected but a cyclic read is only done, if the flow is deployed.
+                }
+              }).autocomplete("search", "");
+            } else {
+              $("#node-input-selectedSignalPath").val("");
+            }
+          }
+          $("#node-input-lookup-selectedSignalPath").removeClass('disabled');
+        }); //getSignals( ..., function (err, res)
+      }); //$("#node-input-lookup-selectedSignalPath").click
+      /*
+      Try to use an external script, but all I try is resulting in status 404 (file not found)
+
+      var dir = "/Projekt/External/nodejs/v0.10.40/Installation_neu/node_modules/node-red/nodes/core/fieldbus/lib/HilscherToolBox.js";
+      alert("loading " + dir);
+      $.getScript(dir).done(function (data, textStatus, jqxhr) {
+        alert(dir + " loaded. Status: " + textStatus);
+      })
+      .fail(function (jqxhr, settings, exception) {
+        $("div.log").text("Triggered ajaxError handler.");
+        alert(dir + " NOT loaded. exception:[" + exception + "] jqxhr:[" + JSON.stringify(jqxhr) + "]");
+      });
+      */
+    } //oneditprepare: function ()
+  });
+
+</script>
+<script type="text/x-red" data-template-name="fieldbus out">
+  <div class="form-row" style="width:500px">
+    <label for="node-input-fieldbusObj"><i class="fa fa-bus"></i>Fieldbus interface</label>
+    <input type="text" id="node-input-fieldbusObj" style="width:70%" placeholder="">
+    <input type="hidden" id="oldInterfaceName">
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row" id="node_input_selectedSignalPathRow">
+    <label for="node-input-selectedSignalPath"><i class="fa fa-random"></i>Signal</label>
+    <input type="text" id="node-input-selectedSignalPath" style="width:60%;" placeholder="none" readonly />
+    <a id="node-input-lookup-selectedSignalPath" class="btn"><i id="node-input-lookup-selectedSignalPath-icon" class="fa fa-search"></i></a>
+  </div>
+  <div class="form-row" id="node_input_lastErrorRow">
+    <label for="node-input-lastErrorView"><i class="fa fa-exclamation"></i>Last Error</label>
+    <input type="text" id="node-input-lastErrorView" style="width:30%;" placeholder="none" readonly />
+    <button type="button" id="node-input-button-clearError" aria-disabled="false" role="button" display="inline-block">
+      <span class="class=" ui-button-text">
+        Clear&nbsp;Error
+      </span>
+    </button>
+    <div class="form-row"></div>
+    <label for="node-input-lastErrorDescView"><i class="fa fa-exclamation"></i>Description</label>
+    <textarea readonly style="width:70%; height:100px; color:red; background-color:yellow" id="node-input-lastErrorDescView"></textarea>
+  </div>
+  <div class="form-row">
+    <input type="hidden" id="node-input-FieldbusNodeVersion" placeholder="" />
+    <input type="hidden" id="node-input-WrapperVersion" placeholder="" />
+    <input type="hidden" id="node-input-WrapperCompileDate" placeholder="" />
+    <input type="hidden" id="node-input-MinExpectedNodeJSVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeJSVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeREDVersion" placeholder="" />
+    <input type="hidden" id="node-input-ActNodeCycleTime" placeholder="" />
+    <input type="hidden" id="node-input-WrapperTraceLevel" placeholder="" />
+    <input type="hidden" id="node-input-NodeTraceLevel" placeholder="" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="fieldbus out" id="output_type_help_text">
+  <p>Writes a value from the flow to a Fieldbus signal.</p>
+  <p></p>
+  <p>The node lets you</p>
+  <p></p>
+  <li>select the type of Fieldbus protocol to be used</li>
+  <li>open the Fieldbus configurator page to configure the Fieldbus signals</li>
+  <li>select a Fieldbus signal to be written</li>
+  <li>write a signal value to Fieldbus</li>
+  <p></p>
+  <p>The <b>msg.payload</b> has to be a JSON object containing the property "value" holding the value(s) to be written to the signal specified.</p>
+  <p>Example:</p>
+  <p><b>msg.payload.value = [9,8,7,6]</b> will write a signal of type 'array' with 4 elements.</p>
+  <p><b>msg.payload.value = 1</b> will write a discrete signal. </p>
+  <p><b>msg.payload.value = "true"</b> will also write a discrete signal of type bit.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('fieldbus out', {
+    category: 'output',
+    defaults: {
+      name: {
+        name: ""
+      },
+      FieldbusNodeVersion: {
+        value: undefined,
+        required: false
+      },
+      WrapperVersion: {
+        value: undefined,
+        required: false
+      },
+      WrapperCompileDate: {
+        value: undefined,
+        required: false
+      },
+      MinExpectedNodeJSVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeJSVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeREDVersion: {
+        value: undefined,
+        required: false
+      },
+      ActNodeCycleTime: {
+        value: undefined,
+        required: false
+      },
+      WrapperTraceLevel: {
+        value: undefined,
+        required: false
+      },
+      NodeTraceLevel: {
+        value: undefined,
+        required: false
+      },
+      selectedSignalPath: {
+        name: "none"
+      },
+      fieldbusObj: {
+        type: "fieldbus interface",
+        required: true
+      }
+    },
+    color: "BurlyWood",
+    inputs: 1,
+    outputs: 0,
+    icon: "fieldbus.png",
+    align: "right",
+    label: function () {
+      var fieldbusNode = RED.nodes.node(this.fieldbusObj);
+      //return this.name || (fieldbusNode ? fieldbusNode.label().split(":")[0] : "fieldbus");
+      if (fieldbusNode && fieldbusNode.label() !== "") {
+        return this.name || fieldbusNode.label().split(":")[0];
+      }
+      return this.name || "fieldbus";
+    }, //label: function ()
+    labelStyle: function () {
+      if (versionData === undefined) {
+        getCurrentVersionInfo(function (res) {
+          versionData = res;
+        });
+      }
+      if (versionData !== undefined) {
+        this.FieldbusNodeVersion = versionData.fieldbusNodeVersion.val;
+        this.WrapperVersion = versionData.wrapperVersion.val;
+        this.WrapperCompileDate = versionData.wrapperVersion.Compiled;
+        this.MinExpectedNodeJSVersion = versionData.expectedNodeVersion.val;
+        this.ActNodeJSVersion = versionData.currentNodeVersion.val;
+        this.ActNodeREDVersion = versionData.nodeREDVersion.val;
+        this.ActNodeCycleTime = versionData.actNodeCycleTime.val;
+        this.WrapperTraceLevel = versionData.wrapperTraceLevel.val;
+        this.NodeTraceLevel = versionData.nodeTraceLevel.val;
+      }
+      return this.name ? "node_label_italic" : "";
+    }, //labelStyle: function ()
+    oneditprepare: function () {
+      //debugger;
+      var self = this;
+      var fieldbusNode = RED.nodes.node(this.fieldbusObj);
+      try {
+        if (fieldbusNode === undefined) {
+          $("#node-input-lookup-selectedSignalPath").addClass('disabled');
+        } else {
+
+          getActError(this, true);
+
+          if (fieldbusNode.currentInterfaceName === "") {
+            $("#node_input_selectedSignalPathRow").hide();
+          } else {
+            $("#node-input-lookup-selectedSignalPath").removeClass('disabled');
+          }
+        }
+        $("#node-input-selectedSignalPath").autocomplete("destroy");
+      } catch (err) {
+      }
+
+      $("#node_input_selectedSignalPathRow").focusout(function () {
+        try {
+          $("#node-input-selectedSignalPath").autocomplete("destroy");
+        } catch (err) { }
+      });
+      //in case a user changes only the fieldbus interface by selecting predefined interfaces the
+      //fieldbusNode object will not contain the current selected name until he pressed save
+      $("#node-input-fieldbusObj").focus(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        if (fieldbusNode) {
+          $("#oldInterfaceName").val(fieldbusNode.expectedInterfaceName);
+        }
+      });
+      $("#node-input-lookup-fieldbusObj").click(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        if (fieldbusNode) {
+          $("#oldInterfaceName").val(fieldbusNode.expectedInterfaceName);
+        }
+      });
+      $("#node-input-button-clearError").click(function () {
+        clearLastError(self);
+      });
+      $("#node-input-fieldbusObj").change(function () {
+        var fieldbusObjectNew = $("#node-input-fieldbusObj").val();
+        var oldInterfaceName = $("#oldInterfaceName").val();
+        var equal = true;
+        //debugger;
+        if (oldInterfaceName !== undefined && oldInterfaceName !== "" && oldInterfaceName !== null) {
+          if (fieldbusObjectNew !== "_ADD_") { //this is the fact if you press 'Add new fieldbus'
+            var fieldbusNodeNew = RED.nodes.node(fieldbusObjectNew);
+            if (fieldbusNodeNew.expectedInterfaceName !== $("#oldInterfaceName").val()) {
+              //alert("OldInterfaceName: " + $("#oldInterfaceName").val() + "\nNewInterfaceName: " + fieldbusNodeNew.expectedInterfaceName);
+              equal = false;
+            }
+          }
+        }
+        if (equal === false && $("#node-input-selectedSignalPath").val() !== "") {
+          $("#node-input-selectedSignalPath").val("");
+          $("#node_input_selectedSignalPathRow").hide();
+          alert("You have changed the fieldbus interface for this node!\n\n" +
+            "Before you can select a signal now you have to download the firmware first.");
+        }
+      });
+      //close the autocomplete selection drop down if the edit field lost the focus
+      $("#node-input-lookup-selectedSignalPath").click(function () {
+        var fieldbusNode = RED.nodes.node($("#node-input-fieldbusObj").val());
+        getSignals(EnumSignalFilter.SIG_FILTER_OUT, fieldbusNode, function (err, res) {
+          if (err !== undefined && err.Error !== 0) {
+            printError(err, "getSignals");
+          } else {
+            if (res.length) {
+              $("#node-input-selectedSignalPath").autocomplete({
+                source: res,
+                minLength: 0,
+                autoFocus: true,
+                close: function (event, ui) {
+                  $("#node-input-selectedSignalPath").autocomplete("destroy");
+                  //at this point the signal is selected but a cyclic read is only done, if the flow is deployed.
+                }
+              }).autocomplete("search", "");
+            } else {
+              $("#node-input-selectedSignalPath").val("");
+            }
+          }
+          $("#node-input-lookup-selectedSignalPath").removeClass('disabled');
+        }); //getSignals(..., function(err, res)
+      }); //$("#node-input-lookup-selectedSignalPath").click
+    } //oneditprepare: function ()
+  }); //RED.nodes.registerType('fieldbus out',
+</script>
+
+<script type="text/x-red" data-template-name="fieldbus interface" style="width:500px;">
+  <!--  First the user should select the communcation device (Master / Slave)
+        Then he should select the protocol he needs
+        And at the end he should select the device (if more than one is still available)
+
+    currentInterfaceName contains a string like " cifx0:io_device:profinet_io" after a board is selected
+        -->
+  <div class="form-row" id="node-config-input-expectedFirmwareNameRow1">
+    <label for="node-config-input-expectedFirmwareName"><i class="fa fa-exchange"></i>Fieldbus interface</label>
+    <input type="text" id="node-config-input-expectedFirmwareName" style="width:60%" placeholder="none" readonly />
+    <a id="node-config-lookup-expectedFirmwareName" class="btn"><i id="node-config-lookup-expectedFirmwareName-icon" class="fa fa-search"></i></a>
+  </div>
+  <div class="form-row">
+    <button type="button" id="node-config-button-reconfigure_interface" aria-disabled="false" role="button" display="inline-block">
+      <span class="class=" ui-button-text">
+        Reconfigure&nbsp;interface
+      </span>
+    </button>
+  </div>
+  <div class="form-row" id="node-config-input-currentFirmwareNameRow1">
+    <label for="node-config-input-currentFirmwareName"><i class="fa fa-bus"></i>Currently loaded firmware</label>
+    <input type="text" id="node-config-input-currentFirmwareName" style="width:70%" placeholder="none" readonly text-align=left />
+  </div>
+  <div class="form-row">
+    <button type="button" id="node-config-button-configureProtocol" aria-disabled="false" role="button" display="inline-block">
+      <span class="class=" ui-button-text">
+        Open&nbsp;Fieldbus&nbsp;configurator
+      </span>
+    </button>
+  </div>
+
+  <div class="form-row" id="node-config-input-clearOutputsOnDeployRow">
+    <label style="width:70%"><i class="fa fa-exclamation-triangle"></i>Clear output signals on deploy</label>
+    <input type="checkbox" id="node-config-input-clearOutputsOnDeploy" name="clearOutputsOnDeploy" style="margin-left: 30px; height: 1em;display: inline-block; width: auto; vertical-align: auto;">
+    <label for="node-config-input-clearOutputsOnDeploy" style="width: auto;">enabled</label>
+  </div>
+  <!--
+  <div class="form-row" id="HWOptionRow">
+    <label for="hwOptionFieldset"><i class="fa fa-exclamation-triangle"></i>Firmware matches hardware</label>
+    <input type="radio" id="hwOptionValidate" name="radioHWOption" checked style="margin-left: 30px; height: 1em;display: inline-block; width: auto; vertical-align: auto;">
+    <label for="hwOptionValidate" style="width: auto;">Matching&nbsp;only</label>
+    <input type="radio" id="hwOptionIgnore" name="radioHWOption" style="margin-left: 30px; height: 1em;display: inline-block; width: auto; vertical-align: auto;">
+    <label for="hwOptionIgnore" style="width: auto;">Ignore&nbsp;match</label>
+  </div>
+    -->
+  <div class="form-row">
+    <input type="hidden" id="node-config-input-selectedDeviceNumber" />
+    <input type="hidden" id="node-config-input-selectedConfigPath" />
+    <input type="hidden" id="node-config-input-selectedSerialNumber" />
+    <input type="hidden" id="node-config-input-selectedChannelNumber" />
+    <input type="hidden" id="node-config-input-expectedFirmwarePath" />
+    <input type="hidden" id="node-config-input-expectedInterfaceName" />
+    <input type="hidden" id="node-config-input-currentInterfaceName" />
+    <input type="hidden" id="node-config-input-fbConfigDataObj" />
+  </div>
+  <div class="form-row" id="signalTableRow">
+    <table class="span" id="io_signal_table">
+      <colgroup>
+        <col style="width:50%" />
+        <col style="width:50%" />
+      </colgroup>
+      <thead>
+        <tr>
+          <td>Input&nbsp;Signals</td>
+          <td>Output&nbsp;Signals</td>
+        </tr>
+      </thead>
+      <tr>
+        <td>
+          <div id="signal_input" style="height:200px; overflow:scroll;" class="tree well">
+            <!--
+            <ul style="list-style-type: none;">
+              <li>
+                <span id="input"><i class="fa fa-folder-close" style="font-size:14px"></i><b>Input</b></span>
+                <ul style="list-style-type: none;">
+                  <li>
+                    <span class="var_attr" id="input-modules" style="font-size:12px; font-weight:bold">Modules:</span>
+                    <i id="input-modules-value" style="font-size:12px;">unknown</i>
+                  </li>
+                  <li>
+                    <span class="var_attr" id="input-signals" style="font-size:12px; font-weight:bold">Signals:</span>
+                    <i id="input-signals-value" style="font-size:12px;">unknown</i>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+              -->
+          </div>
+        </td>
+        <td>
+          <div id="signal_output" style="height:200px; overflow:scroll;" class="tree well">
+            <!--
+            <ul style="list-style-type: none;">
+              <li>
+                <span id="output"><i class="fa fa-folder-close" style="font-size:14px"></i><b>Output</b></span>
+                <ul style="list-style-type: none;">
+                  <li>
+                    <span class="var_attr" id="output-modules" style="font-size:12px; font-weight:bold">Modules:</span>
+                    <i id="output-modules-value" style="font-size:12px;">unknown</i>
+                  </li>
+                  <li>
+                    <span class="var_attr" id="output-signals" style="font-size:12px; font-weight:bold">Signals:</span>
+                    <i id="output-signals-value" style="font-size:12px;">unknown</i>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+              -->
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <hr />
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('fieldbus interface', {
+    category: 'config',
+    defaults: {
+      selectedConfigPath: {
+        value: RED.settings.userDir,
+        required: false
+      },
+      currentFirmwareName: {
+        value: "",
+        required: true
+      },
+      currentInterfaceName: {
+        value: "",
+        required: true
+      },
+      expectedInterfaceName: {
+        value: "",
+        required: true
+      },
+      expectedFirmwareName: {
+        value: "",
+        required: true
+      },
+      expectedFirmwarePath: {
+        value: "",
+        required: false
+      },
+      selectedChannelNumber: {
+        value: -1,
+        required: true
+      },
+      selectedDeviceNumber: {
+        value: -1,
+        required: true
+      },
+      clearOutputsOnDeploy: {
+        value: false,
+        required: false
+      },
+      selectedSerialNumber: {
+        value: -1,
+        required: true
+      }
+    },
+    label: function () {
+      if (versionData === undefined) {
+        getCurrentVersionInfo(function (res) {
+          versionData = res;
+        });
+      }
+      if (this.expectedInterfaceName !== undefined && this.expectedInterfaceName !== "") {
+        return this.expectedInterfaceName + ":Dev_" + this.selectedDeviceNumber + ":Ser_" +
+               this.selectedSerialNumber + ":Ch_" + this.selectedChannelNumber;
+      }
+      return "";
+    }, /*label: function ()*/
+    oneditprepare: function () {
+
+      var self = this;
+      $("#signalTableRow").hide();
+
+      var varCifXName;
+      if ($("#node-config-input-currentInterfaceName").val()) {
+        varCifXName = $("#node-config-input-currentInterfaceName").val().split(':')[0];
+      } else {
+        varCifXName = "cifX0";
+      }
+
+      //debugger;
+      $("#node-config-button-reconfigure_interface").hide();
+      $("#node-config-input-currentFirmwareNameRow1").hide();
+      getCurrentFirmwareInfo(varCifXName, "config", function (err, res) {
+        if (err !== undefined && err.Error !== 0) {
+          printError(err, "getCurrentFirmwareInfo");
+        } else {
+          /* the currentFirmwareNameRow contents are only viewable, when the cifX has a firmware
+          */
+          //alert('$("#node-config-input-currentFirmwareName").val()=' + $("#node-config-input-currentFirmwareName").val());
+          if ($("#node-config-input-currentFirmwareName").val()) {
+            //set the expected stuff per default to the current
+            $("#node-config-input-currentFirmwareNameRow1").show();
+            var currentFirmwareName = $("#node-config-input-currentFirmwareName").val();
+            if (currentFirmwareName !== "Bootloader") {
+              if ($("#node-config-input-expectedFirmwareName").val() === "" || $("#node-config-input-expectedFirmwareName").val() === undefined) {
+                $("#node-config-button-configureProtocol").show();
+                $("#node-config-input-expectedFirmwareName").val(currentFirmwareName);
+                $("#node-config-input-expectedInterfaceName").val($("#node-config-input-currentInterfaceName").val());
+                var currentInterfaceName = $("#node-config-input-currentInterfaceName").val();
+                if (currentInterfaceName) {
+                  var interfaceNameComponents = currentInterfaceName.split(":");
+                  updateConnectionPool(interfaceNameComponents[0], "config");
+                }
+              }
+            }
+          }
+          var firmwareName = $("#node-config-input-expectedFirmwareName").val();
+          if (varCifXName && ($("#node-config-input-currentFirmwareName").val() === $("#node-config-input-expectedFirmwareName").val())) {
+            if (parseInt($("#node-config-input-selectedChannelNumber").val()) === -1 ||
+                parseInt($("#node-config-input-selectedDeviceNumber").val()) === -1 ||
+                parseInt($("#node-config-input-selectedSerialNumber").val()) === -1) {
+              $("#node-config-button-configureProtocol").show();
+              autoSelectedCommunicationChannel(res, function (err, res1) {
+                if (err !== undefined && err.Error !== 0) {
+                  printError(err, "autoSelectedCommunicationChannel");
+                }
+              });
+            }
+          }
+        }
+      });
+
+      $("#node-config-input-expectedFirmwareNameRow1").focusout(function () {
+        try {
+          $("#node-config-input-expectedInterfaceName").autocomplete("destroy");
+        } catch (err) { }
+      });
+      $("#node-config-input-clearOutputsOnDeploy").click(function () {
+        this.clearOutputsOnDeploy = $("#node-config-input-clearOutputsOnDeploy").val();
+      });
+      $("#node-config-lookup-expectedFirmwareName").click(function () {
+        var varFirmwareBefore = this.expectedFirmwareName;
+        $("#node-config-input-expectedFirmwareName").focus(); //this trick will close the drop down in case the edit field will loose the focus!
+        $("#node-config-lookup-expectedFirmwareName").addClass('disabled');
+        var cifXName = "cifX0";
+        $.getJSON('getFirmwareList', {
+          "selectedBoardName": cifXName, //TBD if more boards should be supported this must be changed!
+          "firmwarePath": undefined,
+          "validateHWOptions": false //all firmware files
+        }, function (DllData) {
+          $("#node-config-lookup-expectedFirmwareName").removeClass('disabled');
+          if (DllData.Error !== undefined) {
+            printError(DllData, "getFirmwareList ");
+          } else {
+            //alert("getFirmwareList result: " + JSON.stringify(DllData) );
+            var varFirmwares = [];
+            var varFirmwareObject = {};
+            var iFirmware = 0;
+            $.each(DllData, function (iFirmware, varFirmwareObject) {
+              varFirmwareObject.value = varFirmwareObject.protocolClassNameStruct.userFriendlyName + " " +
+                varFirmwareObject.communicationClassNameStruct.userFriendlyName + ": Version(" + varFirmwareObject.firmwareVersion + ")";
+              varFirmwares.push(varFirmwareObject);
+            }); //$.each(DllData, function (iFirmware, varFirmwareObject)
+            var path;
+            var firmwareName;
+            var firmwareVersion;
+            var protClassName;
+            var commClassName;
+            $("#node-config-input-expectedFirmwareName").autocomplete(
+            {
+              source: varFirmwares,
+              minLength: 0,
+              autoFocus: true,
+              select: function (event, ui) {
+                path = ui.item.path;
+                firmwareVersion = ui.item.firmwareVersion;
+                protClassName = ui.item.protocolClassNameStruct.userFriendlyName;
+                commClassName = ui.item.communicationClassNameStruct.userFriendlyName;
+              },
+              close: function (event, ui) {
+                $("#node-config-input-expectedFirmwarePath").val(path);
+                if (path && path !== '') {
+                  this.expectedFirmwarePath = path;
+                  $("#node-config-input-expectedFirmwareName").autocomplete("destroy");
+                  var interfaceName = cifXName + ':' + protClassName + ':' + commClassName;
+                  $("#node-config-input-expectedInterfaceName").val(interfaceName);
+                  this.expectedInterfaceName = $("#node-config-input-expectedInterfaceName").val();
+                  if ($("#node-config-input-expectedFirmwareName").val() !== $("#node-config-input-currentFirmwareName").val()) {
+                    $("#node-config-input-currentFirmwareNameRow1").show();
+                    $("#node-config-button-reconfigure_interface").show();
+                  }
+                }
+              } //close
+            }).autocomplete("search", "");
+          } //else
+        }); //$.getJSON( 'getFirmwareList'
+      }); //$("#node-config-lookup-expectedFirmwareName").click( function ()
+      $("#node-config-button-reconfigure_interface").click(function () {
+        reconfigureInterface(function (err, res) {
+          if (err) {
+            printError(err, 'reconfigureInterface');
+          } else {
+            //TBD
+          }
+        });
+      });
+      //$("#node-config-tableInput").on("click", "tbody", function () {
+      //  var $this = $(this);
+      //  var myTRs = $this.children("tr");
+      //  if ($this.hasClass("collapsed")) {
+      //    $this.removeClass("collapsed");
+      //    myTRs.first().remove();
+      //    myTRs.show();
+      //  } else {
+      //    $this.addClass("collapsed");
+      //    var newInfo = myTRs.first().children("td").first().text() + " | " + myTRs.length + " entries ";
+      //    myTRs.hide();
+      //    $this.prepend($("<tr> <td colspan='2'>" + newInfo + "</td> </tr>").hide()).find("tr").first().slideDown();
+      //  }
+      //}); //$("#node-config-tableInput").on("click"
+      //$("#node-config-tableOutput").on("click", "tbody", function () {
+      //  var $this = $(this);
+      //  var myTRs = $this.children("tr");
+      //  if ($this.hasClass("collapsed")) {
+      //    $this.removeClass("collapsed");
+      //    myTRs.first().remove();
+      //    myTRs.show();
+      //  } else {
+      //    $this.addClass("collapsed");
+      //    var newInfo = myTRs.first().children("td").first().text() + " | " + myTRs.length + " entries ";
+      //    myTRs.hide(); $this.prepend($("<tr> <td colspan='2'>" + newInfo + "</td> </tr>").hide()).find("tr").first().slideDown();
+      //  }
+      //}); //$("#tableOutput").on("click"
+      $("#node-config-button-configureProtocol").click(function () {
+        var expectedInterfaceName = $("#node-config-input-expectedInterfaceName").val();
+        var expectedFirmwareName = $("#node-config-input-expectedFirmwareName").val();
+        checkExpectedFirmware(expectedInterfaceName, expectedFirmwareName, "config", function (err, res) {
+          if (err) {
+            printError(err, "checkExpectedFirmware");
+          } else {
+            var currentInterfaceName = $("#node-config-input-currentInterfaceName").val();
+            if (currentInterfaceName) {
+              var interfaceNameComponents = currentInterfaceName.split(":");
+              $.getJSON('createConfigFile', {
+                "configPath": "",
+                "selectedBoardName": interfaceNameComponents[0],
+                "selectedDeviceNumber": $("#node-config-input-selectedDeviceNumber").val(),
+                "selectedSerialNumber": $("#node-config-input-selectedSerialNumber").val(),
+                "selectedChannelNumber": $("#node-config-input-selectedChannelNumber").val()
+              }, function (DllData) {
+                if (DllData.Error !== undefined) {
+                  printError(DllData, "createConfigFile");
+                } else if (DllData.Result === "Created" || DllData.Result === "Exists") {
+                  //var varURL = $("#node-config-input-configureProtocol").val();
+                  var varURL = DllData.localFieldbusSettings.webCfgSettings.winOpenUrl + DllData.configFileName;
+                  //alert("CALLING WEBConfigurator with URL:" + varURL);
+                  var win = window.open(varURL, '_blank');
+                  win.focus();
+                } else {
+                  alert("Error in DllData: " + JSON.stringify(DllData));
+                }
+              }); //$.getJSON('createConfigFile'
+            } else {
+              alert("No currentInterfaceName set.");
+            }
+          }
+        })
+      }); //$("#node-config-button-configureprotocol").click()
+
+    }, /*oneditprepare: function ()*/
+    //see also http://nodered.org/docs/creating-nodes/properties.html#property-edit-dialog
+    //oneditsave is called every time the dialog is okayed
+    //so this is the place to make the input and output dialog able to parse the signals
+    oneditcancel: function () { //(function) called when the edit dialog is cancelled. See custom edit behaviour.
+      $("#node-config-input-expectedFirmwarePath").val("");
+    },
+    oneditresize: function () { //(function) is called when the edit dialog is resized
+    },
+    oneditdelete: function () { //(function) called when the delete button in a configuration node’s edit dialog is pressed.
+      //See custom edit behaviour.
+      $("#node-config-input-expectedFirmwarePath").val("");
+      $("#node-config-input-expectedFirmwareName").val("");
+      $("#node-config-input-currentInterfaceName").val("");
+      $("#node-config-input-selectedDeviceNumber").val(-1);
+      $("#node-config-input-selectedSerialNumber ").val(-1);
+      $("#node-config-input-selectedChannelNumber").val(-1);
+      $("#node-config-input-fbConfigDataObj").val("");
+      $("#node-config-input-clearOutputsOnDeploy").val(false);
+      this.expectedInterfaceName = "";
+      this.expectedFirmwarePath = "";
+      this.currentInterfaceName = "";
+      this.selectedDeviceNumber = -1;
+      this.selectedSerialNumber = -1;
+      this.selectedChannelNumber = -1;
+      this.clearOutputsOnDeploy = false;
+    },
+    oneditsave: function () {
+      if ($("#node-config-input-expectedFirmwareName").val()) {
+        this.expectedInterfaceName = $("#node-config-input-expectedInterfaceName").val();
+        this.expectedFirmwarePath = $("#node-config-input-expectedFirmwarePath").val();
+        this.currentInterfaceName = $("#node-config-input-currentInterfaceName").val();
+        this.selectedDeviceNumber = $("#node-config-input-selectedDeviceNumber").val();
+        this.selectedSerialNumber = $("#node-config-input-selectedSerialNumber ").val();
+        this.selectedChannelNumber = $("#node-config-input-selectedChannelNumber").val();
+        this.fbConfigDataObj = $("#node-config-input-fbConfigDataObj").val();
+        this.clearOutputsOnDeploy = $("#node-config-input-clearOutputsOnDeploy").val();
+      }
+    } /*oneditsave: function ()*/
+  }); //RED.nodes.registerType( 'fieldbus interface',
+
+
+  /* Following functions are helper functions but they run on client side and has access to html elements!
+  */
+
+  function printError(DllData, varFunction, extDesc) {
+    var errorText = "";
+    errorText = "Error in call to [" + varFunction + "]\n";
+    errorText += "Error number: [0x" + DllData.Error.toString(16) + "]\n";
+    if (DllData.Module) {
+      errorText += "Module: [" + DllData.Module + "]\n";
+    }
+    if (DllData.Line) {
+      errorText += "Line: [" + DllData.Line + "]\n";
+    }
+    if (extDesc !== undefined) {
+      errorText += "Desc: [" + DllData.AddDesc + extDesc + "]\n";
+    } else {
+      errorText += "Desc: [" + DllData.AddDesc + "]\n";
+    }
+    //RED.notify is not long enough visible to read all informations!
+    //RED.notify(errorText, "error");
+    alert(errorText);
+  } //function PrintError
+
+  function getCurrentVersionInfo(callback) {
+    $.getJSON('getVersionInfo', {
+    }, function (DllData) {
+      callback(DllData);
+    }); //$.getJSON( 'getVersionInfo'
+  }
+  function clearLastError(node) {
+    $.getJSON('clearLastError', {
+      "uid": node.id
+    }, function (status) {
+      if (status === 'done') {
+        $("#node-input-lastErrorView").val(0);
+        $("#node-input-lastErrorDescView").val('');
+      }
+      getActError(node, true);
+    }); //$.getJSON( 'getActError'
+  }
+  function getActError(node, viewHide) {
+    $.getJSON('getActError', {
+      "uid": node.id
+    }, function (error) {
+      if (viewHide === true) {
+        if (error.Error) {
+          $("#node_input_lastErrorRow").show();
+          $("#node-input-lastErrorView").val(error.Error);
+          $("#node-input-lastErrorDescView").val(error.AddDesc);
+        } else {
+          $("#node_input_lastErrorRow").hide();
+        }
+      }
+    }); //$.getJSON( 'getActError'
+  }
+  function updateConnectionPool(cifXName, context, callback) {
+    $.getJSON('updateConnectionPool', {
+      "selectedBoardName": cifXName
+    }, function (DllData) {
+      if (DllData.Error !== undefined) {
+        callback(DllData.Error);
+      } else {
+        var varRes = { "DllData": null, firmwareArray: [] };
+        varRes.DllData = DllData;
+        var varLastFirmwareName;
+        var varLastInterfaceName;
+        var fFirmwareFound = false;
+      }
+    })
+  }
+  /* The function getCurrentFirmwareInfo() must be called in the context of the configuration node!
+   Return value:
+   JSON [] of Board objects
+  */
+  function getCurrentFirmwareInfo(cifXName, context, callback) {
+    $.getJSON('getCifXInfo', {
+      "selectedProtocolClass": 0,
+      "selectedCommunicationClass": 0,
+      "selectedBoardName": cifXName
+    }, function (DllData) {
+      //alert('getCifXInfo: DllData=' + JSON.stringify(DllData));
+      if (DllData.Error !== undefined) {
+        callback(DllData.Error);
+      } else {
+        var varRes = { "DllData": null, firmwareArray: [] };
+        varRes.DllData = DllData;
+        var varLastFirmwareName;
+        var varLastInterfaceName;
+        var fFirmwareFound = false;
+        for (var nB = 0; nB < DllData.length; nB++) {
+          var board = DllData[nB];
+          if (cifXName === undefined || board.cifXName === cifXName) {
+            var varChannelObject = { "interfaceName": null, "firmwareName": null, "selectedChannelNumber": 0, "deviceNumber": 0, "serialNumber": 0, "cifXName": null };
+            for (var nC = 0; nC < board.channel.length; nC++) {
+              var channel = board.channel[nC];
+              //because PNIO have also a channel with an 'Ethernet Interface' firmware I have to look here also the the protocolClass is != 0 && < 28
+              if (channel.channelFWName && channel.selectedProtocolClass > 0 && channel.selectedProtocolClass < 28) {
+                varChannelObject.interfaceName = board.cifXName + ':' + channel.selectedProtocolClassNameStruct.userFriendlyName + ':' +
+                  channel.selectedCommunicationClassNameStruct.userFriendlyName;
+                if (varLastInterfaceName !== varChannelObject.interfaceName) {
+                  varChannelObject.firmwareName = channel.channelFWName + ": Version(" +
+                    channel.channelFWVersionMajor + "." +
+                    channel.channelFWVersionMinor + ", build " +
+                    channel.channelFWVersionBuild + ", revision " +
+                    channel.channelFWVersionRevision + ")";
+                  varLastInterfaceName = varChannelObject.interfaceName;
+                  varChannelObject.selectedChannelNumber = channel.channelOffset;
+                  varChannelObject.deviceNumber = board.selectedDeviceNumber;
+                  varChannelObject.serialNumber = board.selectedSerialNumber;
+                  varChannelObject.cifXName = board.cifXName;
+                  varRes.firmwareArray.push(varChannelObject);
+                }
+              }
+            } //for
+            if (varRes.firmwareArray.length === 0) {
+              //this card does not have a firmware!
+              varChannelObject.interfaceName = board.cifXName + ':0:0';
+              varChannelObject.firmwareName = "Bootloader";
+              varChannelObject.deviceNumber = board.selectedDeviceNumber;
+              varChannelObject.serialNumber = board.selectedSerialNumber;
+              varChannelObject.cifXName = board.cifXName;
+              varRes.firmwareArray.push(varChannelObject);
+            }
+          }
+        } //for
+        var error = { "Error": 0, "AddDesc": null };
+        if (context === "config") {
+          //alert('varRes=' +  JSON.stringify(varRes));
+          if (varRes.firmwareArray.length >= 1) {
+            $("#node-config-input-currentFirmwareNameRow1").show();
+            if (varRes.firmwareArray.length === 1) {
+              $("#node-config-input-currentFirmwareName").val(varRes.firmwareArray[0].firmwareName);
+              if ($("#node-config-input-currentFirmwareName").val() !== "Bootloader") {
+                //alert("varRes.firmwareArray[0].interfaceName=" + varRes.firmwareArray[0].interfaceName);
+                $("#node-config-input-currentInterfaceName").val(varRes.firmwareArray[0].interfaceName);
+                if ($("#node-config-input-expectedInterfaceName").val() === undefined ||
+                    $("#node-config-input-expectedInterfaceName").val() === "") {
+                  $("#node-config-input-expectedFirmwareName").val($("#node-config-input-currentFirmwareName").val());
+                  $("#node-config-input-expectedInterfaceName").val($("#node-config-input-currentInterfaceName").val());
+                  $("#node-config-button-configureProtocol").show();
+                }
+              }
+            } else {
+              $("#node-config-input-currentFirmwareName").val("ERROR! More than one protocol found on board [" + varCifXName + "]!");
+              $("#node-config-input-currentInterfaceName").val("");
+            }
+            //alert('getCurrentFirmwareInfo return res: ' + JSON.stringify(varRes));
+            //PROBLEM: Also if I give this function the configNode object the access to configNode.currentFirmwareName for
+            //example will only change the temporary value on the stack and not in the object itself
+            //This is a common problem to know when JS will make a call by reference or will copy the object
+            callback(undefined, varRes);
+          } else if (varRes.firmwareArray.length === 0) {
+            $("#node-config-input-currentFirmwareNameRow1").hide();
+            $("#node-config-input-currentFirmwareName").val("");
+            $("#node-config-input-currentInterfaceName").val("");
+            error.Error = 1;
+            error.AddDesc = "Could not find a known firmware on board [" + cifXName + "]";
+          }
+        } else {
+          callback(undefined, varRes);
+        }
+        if (error.Error !== 0) {
+          //alert('getCurrentFirmwareInfo return error: ' + JSON.stringify(error));
+          callback(error);
+        }
+      } //else
+    }); //$.getJSON( 'getCifXInfo'
+  }
+  /* The function autoSelectedCommunicationChannel() must be called in the context of a configuration node!
+  */
+  function autoSelectedCommunicationChannel(res, callback) {
+    var error = { "Error": 0, "AddDesc": null, "result": false };
+    if (res.firmwareArray.length === 1) {
+      if (res.firmwareArray[0].firmwareName !== "Bootloader") {
+        if ($("#node-config-input-expectedInterfaceName").val() === res.firmwareArray[0].interfaceName) {
+          //alert("autoSelectedCommunicationChannel SET: " + JSON.stringify(res.firmwareArray[0]));
+          $("#node-config-button-configureProtocol").show();
+          $("#node-config-input-selectedChannelNumber").val(res.firmwareArray[0].selectedChannelNumber);
+          $("#node-config-input-selectedDeviceNumber").val(res.firmwareArray[0].deviceNumber);
+          $("#node-config-input-selectedSerialNumber").val(res.firmwareArray[0].serialNumber);
+          //configNode.selectedChannelNumber = res.firmwareArray[0].selectedChannelNumber;
+          //configNode.selectedDeviceNumber = res.firmwareArray[0].deviceNumber;
+          //configNode.selectedSerialNumber = res.firmwareArray[0].serialNumber;
+          //configNode["selectedSerialNumber"] = res.firmwareArray[0].serialNumber; same as one line above
+          //ATTENTION! The above 3 lines will not work even if I give the configNode object as a parameter!!
+          callback(undefined, res);
+        } else {
+          error.result = false;
+          error.Error = 0;
+          error.AddDesc = "Firmware does not match.";
+          callback(error);
+        }
+      } else {
+        error.result = false;
+        error.Error = 1;
+        error.AddDesc = "Bootloader is active.";
+      }
+    } else if (res.firmwareArray.length > 1) {
+      error.result = false;
+      error.Error = 2;
+      error.AddDesc = "getCurrentFirmwareInfo return more than one firmware information.";
+    } else {
+      error.result = false;
+      error.Error = 3;
+      error.AddDesc = "getCurrentFirmwareInfo could not find a board with a running firmware.";
+    }
+    if (error.Error !== 0) {
+      $("#node-config-button-configureProtocol").hide();
+      $("#node-config-input-selectedChannelNumber").val(-1);
+      $("#node-config-input-selectedDeviceNumber").val(-1);
+      $("#node-config-input-selectedSerialNumber").val(-1);
+      callback(error);
+    }
+  }
+  /*
+    This function should make it possible to force a firmware update and a configuration update even if this
+    cifX is currently used in the flow.
+    The function must be called in the context of a configuration node!
+  */
+  function forceConfigDownload(callback) {
+    var interfaceNameComponents = $("#node-config-input-expectedInterfaceName").val().split(':');
+    $.getJSON('renewConfig', {
+      "configPath": "", //komme hier nicht an userDir aus settings ran. SCH...
+      "selectedBoardName": interfaceNameComponents[0],
+      "selectedDeviceNumber": $("#node-config-input-selectedDeviceNumber").val(),
+      "selectedSerialNumber": $("#node-config-input-selectedSerialNumber").val(),
+      "selectedChannelNumber": $("#node-config-input-selectedChannelNumber").val(),
+      "filter": EnumSignalFilter.SIG_FILTER_IN | EnumSignalFilter.SIG_FILTER_OUT,
+      "forceDownload": true,
+      "forceInit": false,
+      "selectedProtocolClassName": interfaceNameComponents[1],
+      "selectedCommunicationClassName": interfaceNameComponents[2]
+    }, function (DllData) {
+      if (DllData.Error !== undefined) {
+        callback(DllData.Error);
+      } else {
+        callback(undefined, DllData);
+      }
+    });
+  }
+  /*  function reconfigureInterface() must be called in the context of the configuration node!
+  */
+  function reconfigureInterface(callback) {
+    //now find out if a new firmware was selected and should be downloaded.
+    var selectedChannelNumber = $("#node-config-input-selectedChannelNumber").val();
+    var expectedFirmwareName = $("#node-config-input-expectedFirmwareName").val();
+    var expectedFirmwarePath = $("#node-config-input-expectedFirmwarePath").val();
+    var doConfigDownload = false;
+    //debugger;
+    if (expectedFirmwareName && expectedFirmwarePath && expectedFirmwareName !== '' && expectedFirmwarePath !== '') {
+      //alert(" selectedChannelNumber:"  + selectedChannelNumber +
+      //      "\n expectedFirmwareName:" + expectedFirmwareName +
+      //      "\n expectedFirmwarePath:" + expectedFirmwarePath );
+      var interfaceNameComponents = $("#node-config-input-expectedInterfaceName").val().split(':');
+      //get the currently running firmware and compare it with the expected one
+      getCurrentFirmwareInfo(interfaceNameComponents[0], "config", function (err, res) {
+        if (err !== undefined && err.Error !== 0) {
+          callback(err);
+        } else {
+          if (res.firmwareArray.length === 1) {
+            if (expectedFirmwareName !== res.firmwareArray[0].firmwareName) 
+            {
+              //reconfiguration makes sense
+              //a firmware update or a switch to an other firmware is wished.
+              var ret = true;
+              if (res.firmwareArray[0].firmwareName !== "Bootloader") {
+                ret = confirm("Reconfiguring the fieldbus interface may have a direct impact on running fieldbus communications. If continued...\n\n" +
+                                  "... a previously selected firmware that differs from the version loaded will be " +
+                                  "updated now in the interface stopping the network communication to the gateway " +
+                                  "and to any other field devices connected to this interface\n\n" +
+                                  "... a previously executed modification in the fieldbus configurator " +
+                                  "will be updated now in the interface stopping the communication to " +
+                                  "the gateway only leaving the communication to rest of the network untouched\n\n" +
+                                  "Do you really want to continue?");
+              }
+              if (ret === true) {
+                $.getJSON('downloadFirmware',
+                  {
+                    "selectedBoardName": interfaceNameComponents[0],
+                    "firmwarePath": expectedFirmwarePath,
+                    "forceDownload": true
+                  }, function (DllData) {
+                    if (DllData.Error !== undefined) {
+                      callback(DllData);
+                    } else {
+                      //Reread the actual firmware
+                      getCurrentFirmwareInfo(interfaceNameComponents[0], "config", function (err1, res1) {
+                        if (err1 !== undefined && err1.Error !== 0) {
+                          callback(err1);
+                        } else {
+                          //now select the communication channel of the firmware and try to make a download of the configuration
+                          if (res1.firmwareArray.length === 1 && res1.firmwareArray[0].firmwareName !== "Bootloader") {
+                            RED.notify(node._('Firmware [' + res1.firmwareArray[0].firmwareName + '] loaded.'), "success");
+                            autoSelectedCommunicationChannel(res1, function (err2, res2) {
+                              if (err2 !== undefined && err2.Error !== 0) {
+                                callback(err2);
+                              } else {
+                                if (res2 !== undefined) {
+                                  if (res2.firmwareArray.length === 1) {
+                                    doConfigDownload = true;
+                                  } else {
+                                    alert("The loaded firmware has more than one communication channel. Please select now the right one.");
+                                    var myerror = {'Error':-1, 'Module': '10-fielbuss.html', 'Line': 'TBD', 'AddDesc': 'This functionality is currently not implemented!'}
+                                    callback(myerror);
+                                  }
+                                } //else is the case when the current interfaceName (firmware) does not match the expected one
+                              }
+                            });
+                          } else {
+                            alert("The Bootloader is still active after a firmware download!\nThis might be the case when you select an " +
+                              "unsupported firmware by the given hardware.\n\n" +
+                              "Please select a compatible firmware and try again!");
+                            $("#node-config-input-expectedFirmwarePath").val("");
+                            $("#node-config-input-expectedFirmwareName").val("");
+                            $("#node-config-input-expectedInterfaceName").val("");
+                          }
+                        }
+                      });
+                    }
+                  }); //$.getJSON('downloadFirmware'
+              }
+            } else {
+              RED.notify(node._('Firmware [' + expectedFirmwareName + '] already active and not reloaded during reconfiguration process.'), "warn");
+              doConfigDownload = true;
+            }
+            if (doConfigDownload === true) {
+              forceConfigDownload(function (err3, res3) {
+                if (err3 !== undefined && err3.Error !== 0) {
+                  callback(err3);
+                } else {
+                  callback(undefined, res3);
+                }
+              });
+              callback(undefined);
+            }
+          } else {
+            alert('More than one firmware was found on board [' + res.firmwareArray[0].cifXName + ']. This is currently not supported!');
+            callback(undefined);
+          }
+        }
+      }); //getCurrentFirmwareInfo(
+    } //if (expectedFirmwareName)
+    else
+    {
+      alert('Please select a firmware for the download previously!');
+      callback(undefined);
+    }
+  } //function reconfigureInterface
+
+  /*  function downloadFirmware() must be called in the context of the configuration node!
+  */
+  function downloadFirmware(callback) {
+    //now find out if a new firmware was selected and should be downloaded.
+    var expectedFirmwarePath = $("#node-config-input-expectedFirmwarePath").val();
+    if (expectedFirmwarePath !== undefined &&
+        expectedFirmwarePath !== null &&
+        expectedFirmwarePath !== "") {
+      //a firmware update or a switch to an other firmware is wished.
+      var ret = confirm("Warning: A new firmware [" + expectedFirmwareName + "]\n" +
+        "is now loaded to the board [" + $("#node-config-input-currentInterfaceName").val() + "].\n" +
+        "This will stop fieldbus communication and could have an impact on your flow configuration!\n\n" +
+        "Please confirm [with OK] if you want to do the download now.");
+      if (ret === true) {
+        $.getJSON('downloadFirmware',
+          {
+            "selectedBoardName": $("#node-config-input-currentInterfaceName").val().split(":")[0],
+            "firmwarePath": expectedFirmwarePath
+          }, function (DllData) {
+            if (DllData.Error !== undefined) {
+              callback(DllData.Error);
+            } else {
+              testBoardFirmware(true, function (err, res) {
+                if (err !== undefined && err.Error !== 0) {
+                  callback(err);
+                } else {
+                  callback(undefined, res);
+                }
+              });
+            }
+          });
+      } else {
+        var error = {};
+        error.Error = 1;
+        error.AddDesc = "User canceled";
+        callback(error);
+      }
+    }
+  } //function downloadFirmware
+  /*  testBoardFirmware is doing the test if the selected board (if any) contain the selected firmware (if any)
+      and must be called in the context of the configuration node!
+  */
+  function testBoardFirmware(callFromDownload, callback) {
+    //looking in all boards if a firmware is present
+    getCurrentFirmwareInfo(undefined, "config", function (err, res) {
+      if (err !== undefined && err.Error !== 0) {
+        $("#node-config-input-currentFirmwareNameRow1").hide();
+        $("#node-config-button-configureProtocol").hide();
+        callback(err);
+      } else {
+        var error = { "Error": 0, "AddDesc": null };
+        //boards found
+        if (res.firmwareArray.length === 1) {
+          //assume only one firmware (communication channel) is present
+
+          //test if the running firmware is equal the expected one
+          var expectedFirmwareName = $("#node-config-input-expectedFirmwareName").val();
+          if (expectedFirmwareName !== undefined && expectedFirmwareName !== "") {
+            if (expectedFirmwareName !== res.firmwareArray[0].firmwareName) {
+              var ret = confirm("Warning: The currently running firmware [" + res.firmwareArray[0].firmwareName + "]" +
+                " does not match your selected firmware[" + expectedFirmwareName + "].\n\n" +
+                "Press [OK] to update the board with the selected firmware now");
+              if (ret === true) {
+                downloadFirmware(callback);
+              } else {
+                callback(undefined, res);
+              }
+            } else {
+              callback(undefined, res);
+            }
+          } else {
+            callback(undefined, res);
+          }
+
+        } else if (res.firmwareArray.length === 0) {
+          $("#node-config-input-currentFirmwareName").val("Bootloader");
+          if (callFromDownload === true) {
+            $("#node-config-input-expectedFirmwareName").val("");
+            $("#node-config-input-expectedInterfaceName").val("");
+            this.expectedInterfaceName = $("#node-config-input-expectedInterfaceName").val();
+            //alert("this.expectedInterfaceName:" + this.expectedInterfaceName);
+            error.Error = 1;
+            error.AddDesc = "It seems the download has fallen, because the Bootloader is responding and not the loaded Firmware!\n" +
+              "This could happen if you select a firmware with incompatible hardware requirements!\n\n" +
+              "Please select an other firmware!";
+            callback(error);
+          } else {
+            downloadFirmware(callback);
+          }
+        } else {
+          error.Error = 2;
+          error.AddDesc = "The board [TBD] has more than one firmware. This is currently not supported!";
+          callback(error);
+        }
+      }
+    });
+  }
+
+  /* function printModuleList is only called by insertAccessPathIntoList() */
+  function printModuleList(accessPath, list, moduleArray, nPos) {
+    if (accessPath.length > 0) {
+      accessPath += "~"; //separator
+    }
+    accessPath += moduleArray[nPos].Tag;
+    if (moduleArray[nPos].submodules !== undefined) {
+      for (var nSub = 0; nSub < moduleArray[nPos].submodules.length; nSub++) {
+        printModuleList(accessPath, moduleArray[nPos].submodules, nSub);
+      }
+    }
+    if (moduleArray[nPos].Signals !== undefined) {
+      for (var nSig = 0 ; nSig < moduleArray[nPos].Signals.length; nSig++) {
+        var signalPath;
+        signalPath = accessPath + "~" + moduleArray[nPos].Signals[nSig].Tag;
+        list.push(signalPath);
+      }
+    }
+  } //function printModuleList
+
+  /* function insertAccessPathIntoList is called when the user clicks on 'SelectSignalPath' */
+  function insertAccessPathIntoList(list, DllData) {
+    //alert( "insertAccessPathIntoList:=" + JSON.stringify(DllData));
+    var accessPath = "input";
+    var n = 0;
+    if (DllData.signalData.input !== undefined) {
+      for (n = 0 ; n < DllData.signalData.input.modules.length; n++) {
+        printModuleList(accessPath, list, DllData.signalData.input.modules, n);
+      }
+    }
+    accessPath = "output";
+    if (DllData.signalData.output !== undefined) {
+      for (n = 0 ; n < DllData.signalData.output.modules.length; n++) {
+        printModuleList(accessPath, list, DllData.signalData.output.modules, n);
+      }
+    }
+  } //function insertAccessPathIntoList
+
+  function myModule(s_element, s_index, s_array) {
+    if (myBody == undefined) {
+      myBody = document.createElement('tbody');
+    }
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td');
+    var text1 = document.createTextNode(s_element.Tag);
+    td1.appendChild(text1);
+    if (s_element.submodules !== undefined) {
+      addAllModuleSignalsToTable(tableID, myBody, s_element.submodules);
+    } else if (s_element.Signals !== undefined) {
+      addSingleModuleToTable(tableID, myBody, s_element.Signals);
+    } else {
+      alert("Error in structure of modules: (" + JSON.stringify(data) + ")");
+    }
+    tr.appendChild(td1);
+    myBody.appendChild(tr);
+    table.appendChild(myBody);
+  }
+  /* function addAllModuleSignalsToTable is called when user clicks on 'Update Information' in the config node
+      and after the signal information was returned by the wrapper */
+  function addAllModuleSignalsToTable(tableID, body, data) {
+    //first of all delete old contents
+    var table = $(tableID);
+    var myBody = body;
+    table.find("tr:gt(0)").remove(); //should remove all rows except the first
+    function myModule(s_element, s_index, s_array) {
+      if (myBody == undefined) {
+        myBody = document.createElement('tbody');
+      }
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      var text1 = document.createTextNode(s_element.Tag);
+      td1.appendChild(text1);
+      if (s_element.submodules !== undefined) {
+        addAllModuleSignalsToTable(tableID, myBody, s_element.submodules);
+      } else if (s_element.Signals !== undefined) {
+        addSingleModuleToTable(tableID, myBody, s_element.Signals);
+      } else {
+        alert("Error in structure of modules: (" + JSON.stringify(data) + ")");
+      }
+      tr.appendChild(td1);
+      myBody.appendChild(tr);
+      table.appendChild(myBody);
+    };
+    data.forEach(myModule);
+  } //function addAllModuleSignalsToTable
+  function addSingleModuleToTable(table, body, data) {
+    //insert all the signal data
+    function mySignals(s_element, s_index, s_array) {
+      //alert( "(512)" + JSON.stringify(s_array));
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      var td2 = document.createElement('td');
+      var td3 = document.createElement('td');
+      var td4 = document.createElement('td');
+      var text1 = document.createTextNode("");
+      var text2 = document.createTextNode(s_element.Tag);
+      var text3 = document.createTextNode(s_element.DataType);
+      var text4 = document.createTextNode(s_element.AddressDpram);
+      td1.appendChild(text1);
+      td2.appendChild(text2);
+      td3.appendChild(text3);
+      td4.appendChild(text4);
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      body.appendChild(tr);
+    };
+    data.forEach(mySignals);
+  } //function addSingleModuleToTable
+  function removeOptions(selectbox) {
+    var i;
+    for (i = selectbox.options.length - 1; i >= 0; i--) {
+      selectbox.remove(i);
+    }
+  } //function removeOptions
+  /*  function checkExpectedFirmware() can be called in any context but the configNode objext must be given!
+  */
+  function checkExpectedFirmware(expectedInterfaceName, expectedFirmwareName, context, callback) {
+
+    var error = { "Error": 0, "AddDesc": null };
+    var interfaceNameComponents = expectedInterfaceName.split(':');
+    getCurrentFirmwareInfo(interfaceNameComponents[0], context, function (err, res) {
+      if (err !== undefined && err.Error !== 0) {
+        callback(err);
+      } else {
+        if (res.firmwareArray.length === 1) {
+          if (expectedFirmwareName === res.firmwareArray[0].firmwareName) {
+            $("#node-config-button-configureProtocol").show();
+            callback(undefined, "true");
+          } else {
+            error.Error = 1;
+            error.AddDesc = "The firmware names does not match!\n" +
+              "expected is [" + expectedFirmwareName + "]\n" +
+              "current is [" + res.firmwareArray[0].firmwareName + "]\n\n" +
+              "Make sure you have the expected firmware loaded before proceeding!";
+          }
+        } else {
+          error.Error = 1;
+          error.AddDesc = "Could not detect a firmware on board [" + + "]!";
+        }
+        if (error.Error !== 0) {
+          callback(error);
+        }
+      }
+    })
+  }
+  /*  function getSignals() must be called in the context of the input or output node!
+  */
+  function getSignals(filter, fieldbusNode, callback) {
+    if (fieldbusNode) {
+      checkExpectedFirmware(fieldbusNode.expectedInterfaceName, fieldbusNode.expectedFirmwareName, "IO", function (err, res) {
+        if (err && err.Error !== 0) {
+          //alert("error:" + JSON.stringify(err));
+          callback(err);
+        } else {
+          //alert("call:" + fieldbusNode.expectedInterfaceName + "; " + fieldbusNode.selectedDeviceNumber +
+          //      "; " + fieldbusNode.selectedSerialNumber + "; " + fieldbusNode.selectedChannelNumber);
+          $.getJSON('renewConfig', {
+            "configPath": "", //komme hier nicht an userDir aus settings ran. SCH...
+            "selectedBoardName": fieldbusNode.expectedInterfaceName.split(':')[0],
+            "selectedDeviceNumber": fieldbusNode.selectedDeviceNumber,
+            "selectedSerialNumber": fieldbusNode.selectedSerialNumber,
+            "selectedChannelNumber": fieldbusNode.selectedChannelNumber,
+            "filter": filter
+          }, function (DllData) {
+            if (DllData.Error != undefined) {
+              callback(DllData.Error);
+            } else {
+              var varSignals = [];
+              insertAccessPathIntoList(varSignals, DllData);
+              callback(undefined, varSignals);
+            }
+          });
+        }
+      })
+    }
+  }
+
+</script>
