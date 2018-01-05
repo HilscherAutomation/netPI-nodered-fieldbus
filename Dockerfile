@@ -25,7 +25,7 @@ RUN apt-get update  \
 #install Node-RED
     && npm install -g --unsafe-perm node-red \
 #install netx driver
-    && dpkg -i /tmp/netx-drv-1.1.0.deb \
+    && dpkg -i /tmp/netx-docker-pi-drv-1.1.3.deb \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
     && mv /tmp/checkdevicetype.c /opt/cifx \
     && gcc /opt/cifx/checkdevicetype.c -o /opt/cifx/checkdevicetype -I /usr/include/cifx -lcifx \
@@ -47,7 +47,7 @@ RUN apt-get update  \
     && cd /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus \
     && npm install \
 #install netx firmwares
-    && mkdir /opt/cifx/deviceconfig/FW /opt/cifx/deviceconfig/FW/channel0 \
+    && mkdir /opt/cifx/deviceconfig/FW/channel0 \
     && 7z -tzip -r -v: x "/tmp/FWPool.zip" -o/root/.node-red \
 #clean up
     && rm -rf /tmp/* \
