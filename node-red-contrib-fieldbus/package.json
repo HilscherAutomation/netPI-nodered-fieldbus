@@ -1,0 +1,20 @@
+{
+  "name": "node-red-contrib-fieldbus",
+  "version": "1.2.7",
+  "private": true,
+  "description": "fieldbus node for Node-RED to access Hilscher cifX cards.",
+  "author": {
+    "name": "HaraldPlatz",
+    "company":  "Hilscher Gesellschaft fuer Systemautomation mbH",
+    "email": "info@hilscher.com"
+  },
+  "node-red": {
+    "nodes": {
+      "fieldbus": "10-fieldbus.js"
+    }
+  },
+  "dependencies": {
+    "stack-trace": "~0.0.9",
+    "colors": "~1.1.2"
+  }
+}

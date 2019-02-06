@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<ISO15745Profile xmlns="http://www.profibus.com/GSDML/2003/11/DeviceProfile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.profibus.com/GSDML/2003/11/DeviceProfile ..\xsd\GSDML-DeviceProfile-V2.32.xsd">
+  <ProfileHeader>
+    <ProfileIdentification>PROFINET Device Profile</ProfileIdentification>
+    <ProfileRevision>1.00</ProfileRevision>
+    <ProfileName>Device Profile for PROFINET Devices</ProfileName>
+    <ProfileSource>PROFIBUS Nutzerorganisation e. V. (PNO)</ProfileSource>
+    <ProfileClassID>Device</ProfileClassID>
+    <ISO15745Reference>
+      <ISO15745Part>4</ISO15745Part>
+      <ISO15745Edition>1</ISO15745Edition>
+      <ProfileTechnology>GSDML</ProfileTechnology>
+    </ISO15745Reference>
+  </ProfileHeader>
+  <ProfileBody>
+    <DeviceIdentity DeviceID="0x0128" VendorID="0x011E">
+      <InfoText TextId="DeviceDescription_InfoText"/>
+      <VendorName Value="Hilscher Gesellschaft für Systemautomation mbH"/>
+    </DeviceIdentity>
+    <DeviceFunction>
+      <Family MainFamily="Gateway" ProductFamily="NIOT-E-NPI3-51-EN-RE"/>
+    </DeviceFunction>
+    <ApplicationProcess>
+      <DeviceAccessPointList>
+        <DeviceAccessPointItem AddressAssignment="DCP;LOCAL" CheckDeviceID_Allowed="true" DNS_CompatibleName="niotenpi351enrepns" DeviceAccessSupported="true" FixedInSlots="0" ID="DIM 29" ImplementationType="netX" LLDP_NoD_Supported="true" MinDeviceInterval="32" ModuleIdentNumber="0x00002081" MultipleWriteSupported="true" NameOfStationNotTransferable="true" ObjectUUID_LocalIndex="1" PNIO_Version="V2.31" PhysicalSlots="0..255" PrmBeginPrmEndSequenceSupported="false" ResetToFactoryModes="2" SharedDeviceSupported="true" SharedInputSupported="false">
+          <ModuleInfo>
+            <Name TextId="NIOT-E-NPI3-51-EN-RE V1.x"/>
+            <InfoText TextId="DIM 29_InfoText"/>
+            <VendorName Value="Hilscher Gesellschaft für Systemautomation mbH"/>
+            <OrderNumber Value="1321.500"/>
+            <HardwareRelease Value="1"/>
+            <SoftwareRelease Value="V1.x"/>
+          </ModuleInfo>
+          <CertificationInfo ApplicationClass="" ConformanceClass="C" NetloadClass="III"/>
+          <SubslotList>
+            <SubslotItem SubslotNumber="32768" TextId="X1"/>
+            <SubslotItem SubslotNumber="32769" TextId="X1P1"/>
+            <SubslotItem SubslotNumber="32770" TextId="X1P2"/>
+          </SubslotList>
+          <IOConfigData MaxInputLength="1440" MaxOutputLength="1440"/>
+          <UseableModules>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_1byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_2byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_3byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_4byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_8byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_12byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_16byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_20byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_32byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_64byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_128byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_256byteinput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_1byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_2byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_3byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_4byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_8byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_12byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_16byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_20byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_32byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_64byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_128byteoutput"/>
+            <ModuleItemRef AllowedInSlots="1..255" ModuleItemTarget="nt_IoT_256byteoutput"/>
+          </UseableModules>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="DIM 29" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00004000" Writeable_IM_Records="1 2 3 4">
+              <IOData IOCS_Length="1" IOPS_Length="1"/>
+              <ModuleInfo CategoryRef="DAP Module">
+                <Name TextId="NIOT-E-NPI3-51-EN-RE V1.x"/>
+                <InfoText TextId="DIM 29_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+          <SystemDefinedSubmoduleList>
+            <InterfaceSubmoduleItem DCP_BoundarySupported="true" DCP_HelloSupported="false" ID="DIM 29 Interfacesubmodule" NetworkComponentDiagnosisSupported="true" PTP_BoundarySupported="true" SubmoduleIdentNumber="0x00004001" SubslotNumber="32768" SupportedMibs="MIB2" SupportedProtocols="SNMP;LLDP" SupportedRT_Classes="RT_CLASS_1;RT_CLASS_3" TextId="PN-IO">
+              <RT_Class3Properties ForwardingMode="Relative" MaxBridgeDelay="5500" MaxNumberIR_FrameData="256" MaxRetentionTime="20000" StartupMode="Advanced;Legacy"/>
+              <SynchronisationMode MaxLocalJitter="50" SupportedRole="SyncSlave" SupportedSyncProtocols="PTCP" T_PLL_MAX="1000"/>
+              <ApplicationRelations NumberOfAR="2" StartupMode="Advanced;Legacy">
+                <TimingProperties ReductionRatio="1 2 4 8 16 32 64 128 256 512" SendClock="32 64 128"/>
+                <RT_Class3TimingProperties ReductionRatio="1 2 4 8 16" SendClock="8 16 32 64 128"/>
+              </ApplicationRelations>
+              <MediaRedundancy SupportedRole="Client"/>
+            </InterfaceSubmoduleItem>
+            <PortSubmoduleItem CheckMAUTypeDifferenceSupported="true" CheckMAUTypeSupported="true" ID="DIM 29 Portsubmodule 1" IsDefaultRingport="true" LinkStateDiagnosisCapability="Up+Down" MAUTypes="16" MaxPortRxDelay="340" MaxPortTxDelay="92" PortDeactivationSupported="true" SubmoduleIdentNumber="0x00004002" SubslotNumber="32769" TextId="Port1">
+              <MAUTypeList>
+                <MAUTypeItem AdjustSupported="true" Value="16"/>
+              </MAUTypeList>
+            </PortSubmoduleItem>
+            <PortSubmoduleItem CheckMAUTypeDifferenceSupported="true" CheckMAUTypeSupported="true" ID="DIM 29 Portsubmodule 2" IsDefaultRingport="true" LinkStateDiagnosisCapability="Up+Down" MAUTypes="16" MaxPortRxDelay="340" MaxPortTxDelay="92" PortDeactivationSupported="true" SubmoduleIdentNumber="0x00004003" SubslotNumber="32770" TextId="Port2">
+              <MAUTypeList>
+                <MAUTypeItem AdjustSupported="true" Value="16"/>
+              </MAUTypeList>
+            </PortSubmoduleItem>
+          </SystemDefinedSubmoduleList>
+          <Graphics>
+            <GraphicItemRef GraphicItemTarget="1" Type="DeviceSymbol"/>
+            <GraphicItemRef GraphicItemTarget="1" Type="DeviceIcon"/>
+          </Graphics>
+        </DeviceAccessPointItem>
+      </DeviceAccessPointList>
+      <ModuleList>
+        <ModuleItem ID="nt_IoT_1byteinput" ModuleIdentNumber="0x00000102">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_1byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_1byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="1byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000101">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="1" TextId="DataItem_1byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_1byteinput_Name"/>
+                <InfoText TextId="Submodule_1byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_2byteinput" ModuleIdentNumber="0x00000104">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_2byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_2byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="2byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000103">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="2" TextId="DataItem_2byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_2byteinput_Name"/>
+                <InfoText TextId="Submodule_2byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_3byteinput" ModuleIdentNumber="0x00000106">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_3byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_3byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="3byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000105">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="3" TextId="DataItem_3byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_3byteinput_Name"/>
+                <InfoText TextId="Submodule_3byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_4byteinput" ModuleIdentNumber="0x00000108">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_4byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_4byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="4byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000107">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="4" TextId="DataItem_4byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_4byteinput_Name"/>
+                <InfoText TextId="Submodule_4byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_8byteinput" ModuleIdentNumber="0x0000010A">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_8byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_8byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="8byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000109">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="8" TextId="DataItem_8byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_8byteinput_Name"/>
+                <InfoText TextId="Submodule_8byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_12byteinput" ModuleIdentNumber="0x0000010C">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_12byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_12byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="12byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010B">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="12" TextId="DataItem_12byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_12byteinput_Name"/>
+                <InfoText TextId="Submodule_12byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_16byteinput" ModuleIdentNumber="0x0000010E">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_16byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_16byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="16byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010D">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="16" TextId="DataItem_16byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_16byteinput_Name"/>
+                <InfoText TextId="Submodule_16byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_20byteinput" ModuleIdentNumber="0x00000110">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_20byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_20byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="20byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010F">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="20" TextId="DataItem_20byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_20byteinput_Name"/>
+                <InfoText TextId="Submodule_20byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_32byteinput" ModuleIdentNumber="0x00000112">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_32byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_32byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="32byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000111">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="32" TextId="DataItem_32byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_32byteinput_Name"/>
+                <InfoText TextId="Submodule_32byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_64byteinput" ModuleIdentNumber="0x00000114">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_64byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_64byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="64byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000113">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="64" TextId="DataItem_64byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_64byteinput_Name"/>
+                <InfoText TextId="Submodule_64byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_128byteinput" ModuleIdentNumber="0x00000169">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_128byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_128byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="128byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000168">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="128" TextId="DataItem_128byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_128byteinput_Name"/>
+                <InfoText TextId="Submodule_128byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_256byteinput" ModuleIdentNumber="0x00000171">
+          <ModuleInfo CategoryRef="Send Module">
+            <Name TextId="Module_nt_IoT_256byteinput_Name"/>
+            <InfoText TextId="Module_nt_IoT_256byteinput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="256byteinput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000170">
+              <IOData>
+                <Input>
+                  <DataItem DataType="OctetString" Length="256" TextId="DataItem_256byteinput_inputdata_0_Name"/>
+                </Input>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_256byteinput_Name"/>
+                <InfoText TextId="Submodule_256byteinput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_1byteoutput" ModuleIdentNumber="0x00000103">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_1byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_1byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="1byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000102">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="1" TextId="DataItem_1byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_1byteoutput_Name"/>
+                <InfoText TextId="Submodule_1byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_2byteoutput" ModuleIdentNumber="0x00000105">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_2byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_2byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="2byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000104">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="2" TextId="DataItem_2byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_2byteoutput_Name"/>
+                <InfoText TextId="Submodule_2byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_3byteoutput" ModuleIdentNumber="0x00000107">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_3byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_3byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="3byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000106">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="3" TextId="DataItem_3byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_3byteoutput_Name"/>
+                <InfoText TextId="Submodule_3byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_4byteoutput" ModuleIdentNumber="0x00000109">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_4byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_4byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="4byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000108">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="4" TextId="DataItem_4byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_4byteoutput_Name"/>
+                <InfoText TextId="Submodule_4byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_8byteoutput" ModuleIdentNumber="0x0000010B">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_8byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_8byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="8byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010A">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="8" TextId="DataItem_8byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_8byteoutput_Name"/>
+                <InfoText TextId="Submodule_8byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_12byteoutput" ModuleIdentNumber="0x0000010D">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_12byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_12byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="12byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010C">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="12" TextId="DataItem_12byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_12byteoutput_Name"/>
+                <InfoText TextId="Submodule_12byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_16byteoutput" ModuleIdentNumber="0x0000010F">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_16byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_16byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="16byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x0000010E">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="16" TextId="DataItem_16byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_16byteoutput_Name"/>
+                <InfoText TextId="Submodule_16byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_20byteoutput" ModuleIdentNumber="0x00000111">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_20byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_20byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="20byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000110">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="20" TextId="DataItem_20byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_20byteoutput_Name"/>
+                <InfoText TextId="Submodule_20byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_32byteoutput" ModuleIdentNumber="0x00000113">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_32byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_32byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="32byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000112">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="32" TextId="DataItem_32byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_32byteoutput_Name"/>
+                <InfoText TextId="Submodule_32byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_64byteoutput" ModuleIdentNumber="0x00000115">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_64byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_64byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="64byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000114">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="64" TextId="DataItem_64byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_64byteoutput_Name"/>
+                <InfoText TextId="Submodule_64byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_128byteoutput" ModuleIdentNumber="0x00000170">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_128byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_128byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="128byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000169">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="128" TextId="DataItem_128byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_128byteoutput_Name"/>
+                <InfoText TextId="Submodule_128byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+        <ModuleItem ID="nt_IoT_256byteoutput" ModuleIdentNumber="0x00000172">
+          <ModuleInfo CategoryRef="Receive Module">
+            <Name TextId="Module_nt_IoT_256byteoutput_Name"/>
+            <InfoText TextId="Module_nt_IoT_256byteoutput_InfoText"/>
+          </ModuleInfo>
+          <VirtualSubmoduleList>
+            <VirtualSubmoduleItem ID="256byteoutput" MayIssueProcessAlarm="false" SubmoduleIdentNumber="0x00000171">
+              <IOData>
+                <Output>
+                  <DataItem DataType="OctetString" Length="256" TextId="DataItem_256byteoutput_outputdata_0_Name"/>
+                </Output>
+              </IOData>
+              <ModuleInfo>
+                <Name TextId="Submodule_256byteoutput_Name"/>
+                <InfoText TextId="Submodule_256byteoutput_InfoText"/>
+              </ModuleInfo>
+            </VirtualSubmoduleItem>
+          </VirtualSubmoduleList>
+        </ModuleItem>
+      </ModuleList>
+      <GraphicsList>
+        <GraphicItem GraphicFile="GSDML-011E-0128-NIOT-E-NPI3-51ENRE" ID="1"/>
+      </GraphicsList>
+      <CategoryList>
+        <CategoryItem ID="DAP Module" TextId="DAP Module_CategoryName"/>
+        <CategoryItem ID="Receive Module" TextId="Receive Module_CategoryName"/>
+        <CategoryItem ID="Send Module" TextId="Send Module_CategoryName"/>
+      </CategoryList>
+      <ExternalTextList>
+        <PrimaryLanguage>
+          <Text TextId="DAP Module_CategoryName" Value="Device Access Point Modules"/>
+          <Text TextId="DIM 29_InfoText" Value="NIOT-E-NPI3-51-EN-RE V1.x. Supports Identification &amp; Maintenance 1-4, Shared Device, RT and IRT Communication, Advanced startup."/>
+          <Text TextId="DataItem_128byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_128byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_12byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_12byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_16byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_16byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_1byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_1byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_20byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_20byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_256byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_256byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_2byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_2byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_32byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_32byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_3byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_3byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_4byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_4byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_64byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_64byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DataItem_8byteinput_inputdata_0_Name" Value="send data(inputs)"/>
+          <Text TextId="DataItem_8byteoutput_outputdata_0_Name" Value="receive data(outputs)"/>
+          <Text TextId="DeviceDescription_InfoText" Value="netTAP IOT Gateway"/>
+          <Text TextId="Module_nt_IoT_128byteinput_InfoText" Value="128 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_128byteinput_Name" Value="128 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_128byteoutput_InfoText" Value="128 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_128byteoutput_Name" Value="128 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_12byteinput_InfoText" Value="12 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_12byteinput_Name" Value="12 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_12byteoutput_InfoText" Value="12 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_12byteoutput_Name" Value="12 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_16byteinput_InfoText" Value="16 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_16byteinput_Name" Value="16 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_16byteoutput_InfoText" Value="16 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_16byteoutput_Name" Value="16 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_1byteinput_InfoText" Value="1 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_1byteinput_Name" Value="1 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_1byteoutput_InfoText" Value="1 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_1byteoutput_Name" Value="1 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_20byteinput_InfoText" Value="20 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_20byteinput_Name" Value="20 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_20byteoutput_InfoText" Value="20 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_20byteoutput_Name" Value="20 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_256byteinput_InfoText" Value="256 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_256byteinput_Name" Value="256 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_256byteoutput_InfoText" Value="256 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_256byteoutput_Name" Value="256 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_2byteinput_InfoText" Value="2 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_2byteinput_Name" Value="2 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_2byteoutput_InfoText" Value="2 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_2byteoutput_Name" Value="2 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_32byteinput_InfoText" Value="32 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_32byteinput_Name" Value="32 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_32byteoutput_InfoText" Value="32 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_32byteoutput_Name" Value="32 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_3byteinput_InfoText" Value="3 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_3byteinput_Name" Value="3 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_3byteoutput_InfoText" Value="3 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_3byteoutput_Name" Value="3 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_4byteinput_InfoText" Value="4 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_4byteinput_Name" Value="4 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_4byteoutput_InfoText" Value="4 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_4byteoutput_Name" Value="4 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_64byteinput_InfoText" Value="64 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_64byteinput_Name" Value="64 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_64byteoutput_InfoText" Value="64 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_64byteoutput_Name" Value="64 receive byte(outputs)"/>
+          <Text TextId="Module_nt_IoT_8byteinput_InfoText" Value="8 byte send data module(inputs)"/>
+          <Text TextId="Module_nt_IoT_8byteinput_Name" Value="8 send byte(inputs)"/>
+          <Text TextId="Module_nt_IoT_8byteoutput_InfoText" Value="8 byte receive data module(outputs)"/>
+          <Text TextId="Module_nt_IoT_8byteoutput_Name" Value="8 receive byte(outputs)"/>
+          <Text TextId="NIOT-E-NPI3-51-EN-RE V1.x" Value="NIOT-E-NPI3-51-EN-RE V1.x"/>
+          <Text TextId="PN-IO" Value="PN-IO"/>
+          <Text TextId="Port1" Value="Port 1"/>
+          <Text TextId="Port2" Value="Port 2"/>
+          <Text TextId="Receive Module_CategoryName" Value="Receive data(outputs)"/>
+          <Text TextId="Send Module_CategoryName" Value="Send data(inputs)"/>
+          <Text TextId="Submodule_128byteinput_InfoText" Value="128 send byte(inputs)"/>
+          <Text TextId="Submodule_128byteinput_Name" Value="128 byte send data(inputs)"/>
+          <Text TextId="Submodule_128byteoutput_InfoText" Value="128 byte receive data(outputs)"/>
+          <Text TextId="Submodule_128byteoutput_Name" Value="128 receive byte(outputs)"/>
+          <Text TextId="Submodule_12byteinput_InfoText" Value="12 send byte(inputs)"/>
+          <Text TextId="Submodule_12byteinput_Name" Value="12 byte send data(input)"/>
+          <Text TextId="Submodule_12byteoutput_InfoText" Value="12 byte receive data(outputs)"/>
+          <Text TextId="Submodule_12byteoutput_Name" Value="12 receive byte(outputs)"/>
+          <Text TextId="Submodule_16byteinput_InfoText" Value="16 send byte(inputs)"/>
+          <Text TextId="Submodule_16byteinput_Name" Value="16 byte send data(input)"/>
+          <Text TextId="Submodule_16byteoutput_InfoText" Value="16 byte receive data(outputs)"/>
+          <Text TextId="Submodule_16byteoutput_Name" Value="16 receive byte(outputs)"/>
+          <Text TextId="Submodule_1byteinput_InfoText" Value="1 send byte(inputs)"/>
+          <Text TextId="Submodule_1byteinput_Name" Value="1 byte send data(inputs)"/>
+          <Text TextId="Submodule_1byteoutput_InfoText" Value="1 byte receive data(outputs)"/>
+          <Text TextId="Submodule_1byteoutput_Name" Value="1 receive byte(outputs)"/>
+          <Text TextId="Submodule_20byteinput_InfoText" Value="20 send byte(inputs)"/>
+          <Text TextId="Submodule_20byteinput_Name" Value="20 byte send data(input)"/>
+          <Text TextId="Submodule_20byteoutput_InfoText" Value="20 byte receive data(outputs)"/>
+          <Text TextId="Submodule_20byteoutput_Name" Value="20 receive byte(outputs)"/>
+          <Text TextId="Submodule_256byteinput_InfoText" Value="256 send byte(inputs)"/>
+          <Text TextId="Submodule_256byteinput_Name" Value="256 byte send data(input)"/>
+          <Text TextId="Submodule_256byteoutput_InfoText" Value="256 byte receive data(outputs)"/>
+          <Text TextId="Submodule_256byteoutput_Name" Value="256 receive byte(outputs)"/>
+          <Text TextId="Submodule_2byteinput_InfoText" Value="2 send byte(inputs)"/>
+          <Text TextId="Submodule_2byteinput_Name" Value="2 byte send data(input)"/>
+          <Text TextId="Submodule_2byteoutput_InfoText" Value="2 byte receive data(outputs)"/>
+          <Text TextId="Submodule_2byteoutput_Name" Value="2 receive byte(outputs)"/>
+          <Text TextId="Submodule_32byteinput_InfoText" Value="32 send byte(inputs)"/>
+          <Text TextId="Submodule_32byteinput_Name" Value="32 byte send data(input)"/>
+          <Text TextId="Submodule_32byteoutput_InfoText" Value="32 byte receive data(outputs)"/>
+          <Text TextId="Submodule_32byteoutput_Name" Value="32 receive byte(outputs)"/>
+          <Text TextId="Submodule_3byteinput_InfoText" Value="3 send byte(inputs)"/>
+          <Text TextId="Submodule_3byteinput_Name" Value="3 byte send data(input)"/>
+          <Text TextId="Submodule_3byteoutput_InfoText" Value="3 byte receive data(outputs)"/>
+          <Text TextId="Submodule_3byteoutput_Name" Value="3 receive byte(outputs)"/>
+          <Text TextId="Submodule_4byteinput_InfoText" Value="4 send byte(inputs)"/>
+          <Text TextId="Submodule_4byteinput_Name" Value="4 byte send data(input)"/>
+          <Text TextId="Submodule_4byteoutput_InfoText" Value="4 byte receive data(outputs)"/>
+          <Text TextId="Submodule_4byteoutput_Name" Value="4 receive byte(outputs)"/>
+          <Text TextId="Submodule_64byteinput_InfoText" Value="64 send byte(inputs)"/>
+          <Text TextId="Submodule_64byteinput_Name" Value="64 byte send data(input)"/>
+          <Text TextId="Submodule_64byteoutput_InfoText" Value="64 byte receive data(outputs)"/>
+          <Text TextId="Submodule_64byteoutput_Name" Value="64 receive byte(outputs)"/>
+          <Text TextId="Submodule_8byteinput_InfoText" Value="8 send byte(inputs)"/>
+          <Text TextId="Submodule_8byteinput_Name" Value="8 byte send data(input)"/>
+          <Text TextId="Submodule_8byteoutput_InfoText" Value="8 byte receive data(outputs)"/>
+          <Text TextId="Submodule_8byteoutput_Name" Value="8 receive byte(outputs)"/>
+          <Text TextId="X1" Value="X1"/>
+          <Text TextId="X1P1" Value="X1 P1"/>
+          <Text TextId="X1P2" Value="X1 P2"/>
+        </PrimaryLanguage>
+        <Language xml:lang="de">
+          <Text TextId="DAP Module_CategoryName" Value="Device Access Point Module"/>
+          <Text TextId="DIM 29_InfoText" Value="NIOT-E-NPI3-51-EN-RE V1.x. Unterstützt Identification &amp; Maintenance 1-4, Shared Device, RT und IRT Betrieb, Advanced Hochlauf."/>
+          <Text TextId="DataItem_128byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_128byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_12byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_12byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_16byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_16byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_1byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_1byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_20byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_20byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_256byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_256byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_2byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_2byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_32byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_32byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_3byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_3byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_4byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_4byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_64byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_64byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DataItem_8byteinput_inputdata_0_Name" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="DataItem_8byteoutput_outputdata_0_Name" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="DeviceDescription_InfoText" Value="netTAP IOT Gateway"/>
+          <Text TextId="Module_nt_IoT_128byteinput_InfoText" Value="128 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_128byteinput_Name" Value="128 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_128byteoutput_InfoText" Value="128 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_128byteoutput_Name" Value="128 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_12byteinput_InfoText" Value="12 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_12byteinput_Name" Value="12 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_12byteoutput_InfoText" Value="12 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_12byteoutput_Name" Value="12 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_16byteinput_InfoText" Value="16 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_16byteinput_Name" Value="16 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_16byteoutput_InfoText" Value="16 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_16byteoutput_Name" Value="16 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_1byteinput_InfoText" Value="1 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_1byteinput_Name" Value="1 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_1byteoutput_InfoText" Value="1 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_1byteoutput_Name" Value="1 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_20byteinput_InfoText" Value="20 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_20byteinput_Name" Value="20 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_20byteoutput_InfoText" Value="20 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_20byteoutput_Name" Value="20 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_256byteinput_InfoText" Value="256 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_256byteinput_Name" Value="256 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_256byteoutput_InfoText" Value="256 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_256byteoutput_Name" Value="256 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_2byteinput_InfoText" Value="2 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_2byteinput_Name" Value="2 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_2byteoutput_InfoText" Value="2 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_2byteoutput_Name" Value="2 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_32byteinput_InfoText" Value="32 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_32byteinput_Name" Value="32 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_32byteoutput_InfoText" Value="32 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_32byteoutput_Name" Value="32 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_3byteinput_InfoText" Value="3 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_3byteinput_Name" Value="3 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_3byteoutput_InfoText" Value="3 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_3byteoutput_Name" Value="3 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_4byteinput_InfoText" Value="4 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_4byteinput_Name" Value="4 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_4byteoutput_InfoText" Value="4 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_4byteoutput_Name" Value="4 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_64byteinput_InfoText" Value="64 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_64byteinput_Name" Value="64 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_64byteoutput_InfoText" Value="64 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_64byteoutput_Name" Value="64 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_8byteinput_InfoText" Value="8 Byte Sendedatenmodul(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_8byteinput_Name" Value="8 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Module_nt_IoT_8byteoutput_InfoText" Value="8 Byte Empfangsdatenmodul(Ausgänge)"/>
+          <Text TextId="Module_nt_IoT_8byteoutput_Name" Value="8 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="NIOT-E-NPI3-51-EN-RE V1.x" Value="NIOT-E-NPI3-51-EN-RE V1.x"/>
+          <Text TextId="PN-IO" Value="PN-IO"/>
+          <Text TextId="Port1" Value="Port 1"/>
+          <Text TextId="Port2" Value="Port 2"/>
+          <Text TextId="Receive Module_CategoryName" Value="Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Send Module_CategoryName" Value="Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_128byteinput_InfoText" Value="128 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_128byteinput_Name" Value="128 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_128byteoutput_InfoText" Value="128 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_128byteoutput_Name" Value="128 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_12byteinput_InfoText" Value="12 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_12byteinput_Name" Value="12 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_12byteoutput_InfoText" Value="12 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_12byteoutput_Name" Value="12 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_16byteinput_InfoText" Value="16 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_16byteinput_Name" Value="16 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_16byteoutput_InfoText" Value="16 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_16byteoutput_Name" Value="16 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_1byteinput_InfoText" Value="1 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_1byteinput_Name" Value="1 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_1byteoutput_InfoText" Value="1 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_1byteoutput_Name" Value="1 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_20byteinput_InfoText" Value="20 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_20byteinput_Name" Value="20 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_20byteoutput_InfoText" Value="20 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_20byteoutput_Name" Value="20 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_256byteinput_InfoText" Value="256 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_256byteinput_Name" Value="256 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_256byteoutput_InfoText" Value="256 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_256byteoutput_Name" Value="256 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_2byteinput_InfoText" Value="2 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_2byteinput_Name" Value="2 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_2byteoutput_InfoText" Value="2 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_2byteoutput_Name" Value="2 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_32byteinput_InfoText" Value="32 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_32byteinput_Name" Value="32 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_32byteoutput_InfoText" Value="32 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_32byteoutput_Name" Value="32 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_3byteinput_InfoText" Value="3 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_3byteinput_Name" Value="3 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_3byteoutput_InfoText" Value="3 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_3byteoutput_Name" Value="3 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_4byteinput_InfoText" Value="4 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_4byteinput_Name" Value="4 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_4byteoutput_InfoText" Value="4 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_4byteoutput_Name" Value="4 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_64byteinput_InfoText" Value="64 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_64byteinput_Name" Value="64 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_64byteoutput_InfoText" Value="64 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_64byteoutput_Name" Value="64 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_8byteinput_InfoText" Value="8 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_8byteinput_Name" Value="8 Byte Sendedaten(Eingänge)"/>
+          <Text TextId="Submodule_8byteoutput_InfoText" Value="8 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="Submodule_8byteoutput_Name" Value="8 Byte Empfangsdaten(Ausgänge)"/>
+          <Text TextId="X1" Value="X1"/>
+          <Text TextId="X1P1" Value="X1 P1"/>
+          <Text TextId="X1P2" Value="X1 P2"/>
+        </Language>
+      </ExternalTextList>
+    </ApplicationProcess>
+  </ProfileBody>
+</ISO15745Profile>
