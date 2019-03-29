@@ -51,7 +51,7 @@ RUN apt-get update  \
 #install fieldbus nodes
     && mkdir /root/.node-red \
     && mv /tmp/fieldbusSettings.json /root/.node-red \
-    && mkdir /usr/lib/node_modules/node-red/nodes/hilscher /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
+    && mkdir -p /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
     && mv /tmp/10-fieldbus.html /tmp/10-fieldbus.js /tmp/package.json -t /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus \
     && mv /tmp/fieldbusConnectionPool.js /tmp/fieldbusHandler.js /tmp/HilscherLog.js /tmp/HilscherToolBox.js /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
     && cd /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus \
