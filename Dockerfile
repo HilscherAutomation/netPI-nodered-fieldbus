@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.0.3
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.0.4
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -32,7 +32,7 @@ RUN apt-get update  \
     && curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -  \
     && apt-get install -y nodejs  \
 #install Node-RED
-    && npm install -g --unsafe-perm node-red \
+    && npm install -g --unsafe-perm node-red@0.19.6 \
 #install netx driver
     && dpkg -i /tmp/netx-docker-pi-drv-1.1.3.deb \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
