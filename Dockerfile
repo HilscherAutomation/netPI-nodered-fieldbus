@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.0.4
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.0.5
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -32,7 +32,7 @@ RUN apt-get update  \
     && curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -  \
     && apt-get install -y nodejs  \
 #install Node-RED
-    && npm install -g --unsafe-perm node-red@0.19.6 \
+    && npm install -g --unsafe-perm node-red \
 #install netx driver
     && dpkg -i /tmp/netx-docker-pi-drv-1.1.3.deb \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
@@ -51,13 +51,15 @@ RUN apt-get update  \
 #install fieldbus nodes
     && mkdir /root/.node-red \
     && mv /tmp/fieldbusSettings.json /root/.node-red \
-    && mkdir -p /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
-    && mv /tmp/10-fieldbus.html /tmp/10-fieldbus.js /tmp/package.json -t /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus \
-    && mv /tmp/fieldbusConnectionPool.js /tmp/fieldbusHandler.js /tmp/HilscherLog.js /tmp/HilscherToolBox.js /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
-    && cd /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus \
+    && mkdir -p /root/.node-red/node_modules/fieldbus/lib \
+    && mv /tmp/10-fieldbus.html /tmp/10-fieldbus.js /tmp/package.json -t /root/.node-red/node_modules/fieldbus \
+    && mv /tmp/fieldbusConnectionPool.js /tmp/fieldbusHandler.js /tmp/HilscherLog.js /tmp/HilscherToolBox.js /root/.node-red/node_modules/fieldbus/lib \
+    && cd /root/.node-red/node_modules/fieldbus \
     && npm install \
+    && cd /root/.node-red \
+    && npm rebuild \
 #install fieldbus nodes wrapper library and generate needed libboost V1.61.0 links
-    && mv /tmp/fieldbus.node /usr/lib/node_modules/node-red/nodes/hilscher/fieldbus/lib \
+    && mv /tmp/fieldbus.node /root/.node-red/node_modules/fieldbus/lib \
     && ln -s /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.62.0 /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.61.0 \
     && ln -s /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.62.0 /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.61.0 \
 #install netx firmwares from zip
