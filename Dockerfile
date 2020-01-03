@@ -1,5 +1,5 @@
 #use armv7hf compatible base image
-FROM balenalib/armv7hf-debian:stretch
+FROM balenalib/armv7hf-debian:stretch-20191223
 
 #dynamic build arguments coming from the /hooks/build file
 ARG BUILD_DATE
