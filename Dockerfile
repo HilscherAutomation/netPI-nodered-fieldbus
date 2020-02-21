@@ -1,5 +1,5 @@
 #use armv7hf compatible base image
-FROM balenalib/armv7hf-debian:stretch-20191223
+FROM balenalib/armv7hf-debian:buster-20191223
 
 #dynamic build arguments coming from the /hooks/build file
 ARG BUILD_DATE
@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.0.6
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.1.0
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -27,12 +27,12 @@ COPY "./node-red-contrib-fieldbus/*" "./node-red-contrib-fieldbus/lib/*" "./firm
 
 #do installation
 RUN apt-get update  \
-    && apt-get install curl libboost-filesystem1.62-dev libboost-date-time1.62-dev libjansson-dev p7zip-full build-essential python-dev \
+    && apt-get install curl libboost-filesystem-dev libboost-date-time-dev libjansson-dev p7zip-full build-essential python-dev
 #install node.js V8.x.x
-    && curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -  \
-    && apt-get install -y nodejs  \
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -  \
+    && apt-get install -y nodejs
 #install Node-RED
-    && npm install -g --unsafe-perm node-red@0.20.8 \
+RUN npm install -g --unsafe-perm node-red@1.0.3 \
 #install netx driver
     && dpkg -i /tmp/netx-docker-pi-drv-1.1.3.deb \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
@@ -58,10 +58,10 @@ RUN apt-get update  \
     && npm install \
     && cd /root/.node-red \
     && npm rebuild \
-#install fieldbus nodes wrapper library and generate needed libboost V1.61.0 links
+#install fieldbus nodes wrapper library and generate needed libboost links
     && mv /tmp/fieldbus.node /usr/lib/node_modules/fieldbus/lib \
-    && ln -s /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.62.0 /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.61.0 \
-    && ln -s /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.62.0 /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.61.0 \
+    && ln -s /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so.1.64.0 \
+    && ln -s /usr/lib/arm-linux-gnueabihf/libboost_system.so /usr/lib/arm-linux-gnueabihf/libboost_system.so.1.64.0 \
 #install netx firmwares from zip
     && mkdir /opt/cifx/deviceconfig/FW/channel0 \
     && 7z -tzip -r -v: x "/tmp/FWPool.zip" -o/root/.node-red \
