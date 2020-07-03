@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.1.0
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.2.0
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -23,7 +23,7 @@ LABEL maintainer="netpi@hilscher.com" \
 
 #copy files
 COPY "./init.d/*" /etc/init.d/
-COPY "./node-red-contrib-fieldbus/*" "./node-red-contrib-fieldbus/lib/*" "./firmwares/*" "./driver/*" "./web-configurator-fieldbus/*" /tmp/
+COPY "./node-red-contrib-fieldbus/*" "./node-red-contrib-fieldbus/lib/*" "./firmwares/*" "./driver/*" "./web-configurator-fieldbus/*" "./driver/includes/" /tmp/
 
 #do installation
 RUN apt-get update  \
@@ -34,8 +34,10 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -  \
 #install Node-RED
 RUN npm install -g --unsafe-perm node-red@1.0.3 \
 #install netx driver
-    && dpkg -i /tmp/netx-docker-pi-drv-1.1.3.deb \
+    && dpkg -i /tmp/netx-docker-pi-drv-2.0.1-r0.deb \
+    && ln -s /usr/lib/libcifx.so /usr/lib/libcifx.so.1 \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
+    && cp /tmp/*.h /usr/include/cifx \
     && mv /tmp/checkdevicetype.c /opt/cifx \
     && gcc /opt/cifx/checkdevicetype.c -o /opt/cifx/checkdevicetype -I /usr/include/cifx -lcifx \
     && chmod +x /opt/cifx/checkdevicetype \
