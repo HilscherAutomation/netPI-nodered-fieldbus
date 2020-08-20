@@ -41,7 +41,7 @@ $ ****************************************************************************
         ProdCode = 295;
         MajRev = 1;
         MinRev = 1;
-        ProdName = "NIOT-E-NPI3-PI-EN-RE";
+        ProdName = "NIOT-E-NPI3-51-EN-RE";
         Catalog = "1321.500";
         Icon = "NTEdge.ico";
 
