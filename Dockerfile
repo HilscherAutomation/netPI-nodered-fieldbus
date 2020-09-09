@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.2.1
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.2.2
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -36,6 +36,7 @@ RUN npm install -g --unsafe-perm node-red@1.1.3 \
 #install netx driver
     && dpkg -i /tmp/netx-docker-pi-drv-2.0.1-r0.deb \
     && ln -s /usr/lib/libcifx.so /usr/lib/libcifx.so.1 \
+    && sed -i -e 's;ChunkSize=0;ChunkSize=250;' /opt/cifx/plugins/netx-spm/config0 \
 #compile program checking whether we are running on netPI RTE 3 or on Pi with NHAT 52-RTE
     && cp /tmp/*.h /usr/include/cifx \
     && mv /tmp/checkdevicetype.c /opt/cifx \
