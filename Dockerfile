@@ -14,7 +14,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 RUN [ "cross-build-start" ]
 
 #version
-ENV HILSCHERNETPI_NODERED_FB_VERSION 1.2.2
+ENV HILSCHERNETPI_NODERED_FB_VERSION 1.3.0
 
 #labeling
 LABEL maintainer="netpi@hilscher.com" \ 
@@ -32,7 +32,7 @@ RUN apt-get update  \
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -  \
     && apt-get install -y nodejs
 #install Node-RED
-RUN npm install -g --unsafe-perm node-red@1.1.3 \
+RUN npm install -g --unsafe-perm node-red@1.2.2 \
 #install netx driver
     && dpkg -i /tmp/netx-docker-pi-drv-2.0.1-r0.deb \
     && ln -s /usr/lib/libcifx.so /usr/lib/libcifx.so.1 \
@@ -43,7 +43,7 @@ RUN npm install -g --unsafe-perm node-red@1.1.3 \
     && gcc /opt/cifx/checkdevicetype.c -o /opt/cifx/checkdevicetype -I /usr/include/cifx -lcifx \
     && chmod +x /opt/cifx/checkdevicetype \
 #install web fieldbus configurator
-    && 7z -t7z -r -v: x "/tmp/WebConfigurator_V1.0200.1358.7z" -o/usr/lib/node_modules \
+    && 7z -t7z -r -v: x "/tmp/WebConfigurator_V1.0200.1358_mod.7z" -o/usr/lib/node_modules \
     && mv "/usr/lib/node_modules/WebConfigurator V1.0200.1358" "/usr/lib/node_modules/WebConfigurator" \
     && cd /usr/lib/node_modules/WebConfigurator/ServerContent/ \
     && npm install \
