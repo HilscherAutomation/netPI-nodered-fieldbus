@@ -1,3 +1,5 @@
+# Container no longer maintained. Use [netpi-nodered](https://registry.hub.docker.com/r/hilschernetpi/netpi-nodered/) container instead
+
 ## Node-RED + fieldbus nodes
 
 [![](https://images.microbadger.com/badges/image/hilschernetpi/netpi-nodered-fieldbus.svg)](https://microbadger.com/images/hilschernetpi/netpi-nodered-fieldbus "Node-RED + fieldbus nodes")
